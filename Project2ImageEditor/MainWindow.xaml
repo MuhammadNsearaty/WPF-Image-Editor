@@ -1,0 +1,280 @@
+﻿<Window x:Class="Project2ImageEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project2ImageEditor"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Height="750"
+        Width="1000"
+        Style="{StaticResource windowTemplate}"
+        x:Name="window">
+    <Grid>
+
+        <Canvas x:Name="canvas1"
+                RenderTransformOrigin=".5,.5"
+                Margin="261,10,9.6,188.8"
+                MouseDown="Canvas_MouseDown"
+                MouseMove="Canvas_MouseMove">
+            <Canvas.Background>
+                <SolidColorBrush x:Name="brush"
+                                 Opacity="0" />
+            </Canvas.Background>
+            <Image Name="ImageViewer1"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   Height="492"
+                   Canvas.Left="10"
+                   Width="703"
+                   Canvas.Top="10" />
+        </Canvas>
+        <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Background="Transparent"
+                 Margin="15,24,765.6,0"
+                 Height="318"
+                 VerticalAlignment="Top">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Padding"
+                            Value="5,5,0,0" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+
+            <Button x:Name="loadButton"
+                    Content="Load"
+                    Margin="0"
+                    FontSize="11"
+                    RenderTransformOrigin="-1.515,0.949"
+                    Height="auto"
+                    Click="loadButton_Click"
+                    Width="59" />
+            <Button x:Name="ClearButton"
+                    Content="Clear"
+                    FontSize="11"
+                    Width="auto"
+                    Height="auto"
+                    Click="ClearButton_Click" />
+            <Button x:Name="SaveButton"
+                    Content="Save"
+                    FontSize="11"
+                    Width="auto"
+                    Height="auto"
+                    Click="newSave" />
+            <Button x:Name="addLayerButton"
+                    Content="Add Layer"
+                    Click="addLayerButton_Click"
+                    Width="auto"
+                    Height="auto" />
+            <Slider x:Name="slider"
+                    Width="66"
+                    Value="3" />
+            <Button x:Name="rotateRight"
+                    Click="rotateRight_Click"
+                    Style="{StaticResource InformButton}"
+                    Width="31"
+                    Margin="0"
+                    Height="28">
+                <Image Source="Resources\icons\rotate-right.png" />
+            </Button>
+            <Button x:Name="rotateLeft"
+                    Click="rotateLeft_Click"
+                    Style="{StaticResource InformButton}"
+                    Width="31"
+                    Margin="0"
+                    Height="28">
+                <Image Source="Resources\icons\rotate-left.png" />
+            </Button>
+            <Button x:Name="penButton"
+                    Click="penButton_Click"
+                    Style="{StaticResource InformButton}"
+                    Width="auto"
+                    Margin="0">
+                <Image Source="Resources\icons\pen.png"
+                       Height="22"
+                       Width="22" />
+            </Button>
+            <Button x:Name="RectButton"
+                    Click="RectButton_Click"
+                    Style="{StaticResource InformButton}"
+                    Width="auto"
+                    Height="auto"
+                    Margin="0">
+                <Image Source="Resources\icons\rectangle.png"
+                       Width="22"
+                       Height="22" />
+
+            </Button>
+            <Button x:Name="circleButton"
+                    Width="auto"
+                    Height="auto"
+                    Style="{StaticResource InformButton}"
+                    Click="circleButton_Click"
+                    Margin="0">
+                <Image Source="Resources\icons\filled-circle.png"
+                       Height="22"
+                       Width="22" />
+            </Button>
+
+
+
+            <materialDesign:ColorPicker Width="163"
+                                        Height="69"
+                                        x:Name="clrPick">
+
+
+            </materialDesign:ColorPicker>
+            <ScrollViewer HorizontalAlignment="Stretch"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          Grid.Row="1"
+                          Width="203"
+                          Height="140">
+                <Grid>
+                    <ListBoxItem x:Name="ListViewItemMenu"
+                                 Content="{Binding Path=Header}"
+                                 Padding="37 14"
+                                 FontSize="12"
+                                 HorizontalAlignment="Center"
+                                 Foreground="White" />
+                    <Expander x:Name="ExpanderMenu"
+                              Header="Fillters"
+                              IsExpanded="False"
+                              Width="200"
+                              HorizontalAlignment="Right"
+                              Background="{x:Null}"
+                              Foreground="White">
+                        <ListView x:Name="ListViewMenu"
+                                  Foreground="White"
+                                  HorizontalAlignment="Center"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListViewItem>
+                                <Button x:Name="BlackWhiteButton"
+                                        Click="BlackWhiteButton_Click"
+                                        Content="BlackWhite"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button x:Name="Comic"
+                                        Content="Comic"
+                                        Click="Comic_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="Gotham"
+                                        x:Name="Gotham"
+                                        Click="Gotham_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="GreyScale"
+                                        x:Name="GreyScale"
+                                        Click="GreyScale_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="HiSatch"
+                                        x:Name="HiSatch"
+                                        Click="HiSatch_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="Invert"
+                                        x:Name="Invert"
+                                        Click="Invert_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="Lomograph"
+                                        x:Name="Lomograph"
+                                        Click="Lomograph_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="LoSatch"
+                                        x:Name="LoSatch"
+                                        Click="LoSatch_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="Polaroid"
+                                        x:Name="Polaroid"
+                                        Click="Polaroid_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                            <ListViewItem>
+                                <Button Content="Sepia"
+                                        x:Name="Sepia"
+                                        Click="Sepia_Click"
+                                        Height="23"
+                                        Width="103" />
+                            </ListViewItem>
+                        </ListView>
+                    </Expander>
+                </Grid>
+            </ScrollViewer>
+
+        </ListBox>
+
+
+        <ListView x:Name="layersListView"
+                 HorizontalAlignment="Right"
+                 Height="364"
+                 Margin="0,347,765.6,0"
+                 VerticalAlignment="Top"
+                 Width="228"
+                 Padding="0,0,0,0">
+            <ListView.View>
+                <GridView x:Name="my_dataGrid">
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="{x:Type GridViewColumnHeader}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
+                    <GridViewColumn Header="image">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Margin="5,0" Source="{Binding Path=bmp}" Width="80" Height="80"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="label">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Margin="2,0" Content="{Binding Path=str}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="checkBox">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Margin="2,0" Checked="CheckBox_Checked" IsChecked="{Binding Path=isChecked}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+
+    </Grid>
+</Window>

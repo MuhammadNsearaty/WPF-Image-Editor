@@ -39,7 +39,10 @@ namespace Project2ImageEditor
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
         private Rectangle rectangle;
+        Rectangle newRect;
+
         private Ellipse cirlce;
+        Ellipse newCir;
         string flag = "none";
         int angel = 0;
         string path = "";
@@ -75,14 +78,18 @@ namespace Project2ImageEditor
                         rectangle.Stroke = br;
                         rectangle.Fill = br;
                         Canvas.SetLeft(rectangle, currentPoint.X);
-                        Canvas.SetTop(rectangle, currentPoint.X);
+                        Canvas.SetTop(rectangle, currentPoint.Y);
                         canvas1.Children.Add(rectangle);
 
-                        Rectangle newRect = new Rectangle { StrokeThickness = slider.Value };
+                        newRect =  new Rectangle { StrokeThickness = slider.Value };
+
                         newRect.Stroke = br;
                         newRect.Fill = br;
-                        Canvas.SetLeft(newRect, currentPoint.X);
-                        Canvas.SetTop(newRect, currentPoint.X);
+                        double dimW = 80/canvas1.ActualWidth ;
+                        double dimH = 80 / canvas1.ActualHeight;
+
+                        Canvas.SetLeft(newRect, currentPoint.X * dimW);
+                        Canvas.SetTop(newRect, currentPoint.Y * dimH);
 
                         this.layersList[this.currentIdx].canvas.Children.Add(newRect);
                         break;
@@ -101,7 +108,20 @@ namespace Project2ImageEditor
                         Canvas.SetLeft(cirlce, currentPoint.X);
                         Canvas.SetTop(cirlce, currentPoint.X);
                         canvas1.Children.Add(cirlce);
-                        this.layersList[this.currentIdx].canvas.Children.Add(cirlce);
+
+                        newCir = new Ellipse
+                        {
+                            StrokeThickness = slider.Value
+                        };
+                        double dimW = 80 / canvas1.ActualWidth;
+                        double dimH = 80 / canvas1.ActualHeight;
+
+                        newCir.Stroke = br;
+                        newCir.Fill = br;
+                        Canvas.SetLeft(newCir, currentPoint.X*dimW);
+                        Canvas.SetTop(newCir, currentPoint.X*dimH);
+
+                        this.layersList[this.currentIdx].canvas.Children.Add(newCir);
 
                         break;
 
@@ -138,6 +158,7 @@ namespace Project2ImageEditor
                     case "rect":
                         {
                             if (e.LeftButton == MouseButtonState.Released || rectangle == null)
+                                //newRect = null;
                                 return;
 
                             var pos = e.GetPosition(canvas1);
@@ -155,11 +176,36 @@ namespace Project2ImageEditor
 
                             Canvas.SetLeft(rectangle, x);
                             Canvas.SetTop(rectangle, y);
+
+
+                            double dimW = 80 / canvas1.ActualWidth;
+                            double dimH = 80 / canvas1.ActualHeight;
+
+                            Point point = new Point(currentPoint.X,currentPoint.Y);
+                            point.X *= dimW;
+                            point.Y *= dimH;
+                            // Set the position of rectangle
+                            var x1 = Math.Min(pos.X*dimW, point.X);
+                            var y1 = Math.Min(pos.Y * dimH, point.Y);
+
+                            // Set the dimenssion of the rectangle
+                            var w1 = Math.Max(pos.X * dimW, point.X) - x1;
+                            var h1 = Math.Max(pos.Y * dimH, point.Y) - y1;
+
+                            newRect.Width = w1;
+                            newRect.Height = h1;
+
+                            Canvas.SetLeft(newRect, x1);
+                            Canvas.SetTop(newRect, y1);
+
+
+
+
                             break;
                         }
                     case "circle":
                         {
-                            if (e.LeftButton == MouseButtonState.Released || rectangle == null)
+                            if (e.LeftButton == MouseButtonState.Released || cirlce == null)
                                 return;
 
                             var pos = e.GetPosition(canvas1);
@@ -177,6 +223,24 @@ namespace Project2ImageEditor
 
                             Canvas.SetLeft(cirlce, x);
                             Canvas.SetTop(cirlce, y);
+
+                            double dimW = 80 / canvas1.ActualWidth;
+                            double dimH = 80 / canvas1.ActualHeight;
+                            Point point = new Point(currentPoint.X*dimW, currentPoint.Y*dimH);
+                            
+                            // Set the position of rectangle
+                            var x1 = Math.Min(pos.X*dimW, point.X);
+                            var y1 = Math.Min(pos.Y*dimH, point.Y);
+
+                            // Set the dimenssion of the rectangle
+                            var w1 = Math.Max(pos.X * dimW, point.X) - x1;
+                            var h1 = Math.Max(pos.Y*dimH, point.Y) - y1;
+
+                            newCir.Width = w1;
+                            newCir.Height = h1;
+
+                            Canvas.SetLeft(newCir, x1);
+                            Canvas.SetTop(newCir, y1);
                             break;
 
                         }

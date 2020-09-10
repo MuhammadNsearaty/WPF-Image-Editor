@@ -33,9 +33,7 @@ namespace Project2ImageEditor
     {
 
         List<Layer> layersList = new List<Layer>();
-        //List<Canvas> canvasList = new List<Canvas>();
-        List<int> currentLayers = new List<int>();
-        int currentLayer = 0;
+        int currentIdx = 0;
         int idx = 0;
         
         BitmapImage bitmap = new BitmapImage();
@@ -49,7 +47,6 @@ namespace Project2ImageEditor
         {
             InitializeComponent();
             this.DataContext = this;
-            currentLayers.Add(0);
         }
         
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -74,14 +71,20 @@ namespace Project2ImageEditor
                         rectangle = new Rectangle
                         {
                             StrokeThickness = slider.Value
-                            
                         };
                         rectangle.Stroke = br;
                         rectangle.Fill = br;
                         Canvas.SetLeft(rectangle, currentPoint.X);
                         Canvas.SetTop(rectangle, currentPoint.X);
                         canvas1.Children.Add(rectangle);
-                        
+
+                        Rectangle newRect = new Rectangle { StrokeThickness = slider.Value };
+                        newRect.Stroke = br;
+                        newRect.Fill = br;
+                        Canvas.SetLeft(newRect, currentPoint.X);
+                        Canvas.SetTop(newRect, currentPoint.X);
+
+                        this.layersList[this.currentIdx].canvas.Children.Add(newRect);
                         break;
                     }
                 case "circle":
@@ -98,6 +101,7 @@ namespace Project2ImageEditor
                         Canvas.SetLeft(cirlce, currentPoint.X);
                         Canvas.SetTop(cirlce, currentPoint.X);
                         canvas1.Children.Add(cirlce);
+                        this.layersList[this.currentIdx].canvas.Children.Add(cirlce);
 
                         break;
 
@@ -127,7 +131,8 @@ namespace Project2ImageEditor
 
                             currentPoint = e.GetPosition(canvas1);
                             canvas1.Children.Add(line);
-                            
+                            this.layersList[this.currentIdx].canvas.Children.Add(line);
+
                             break;
                         }
                     case "rect":
@@ -178,6 +183,7 @@ namespace Project2ImageEditor
                     case "none":
                         break;
                 }
+               
             }
         }
 
@@ -258,6 +264,15 @@ namespace Project2ImageEditor
                 bitmap.EndInit();
                 ImageViewer1.Source = bitmap;
             }
+            Canvas newCanvas = new Canvas();
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = bitmap;
+            newCanvas.Background = ib;
+            this.layersList.Add(new Layer(newCanvas,"Layer 0",true,0));
+            this.layersListView.ItemsSource = null;
+            this.layersListView.ItemsSource = layersList;
+            this.currentIdx = 0;
+            this.idx++;
         }
         private void Comic_Click(object sender, RoutedEventArgs e)
 
@@ -339,21 +354,22 @@ namespace Project2ImageEditor
             stream.Close();
             stream.Dispose();
 
+
             ib.ImageSource = bitmap;
             newcanvas.Background = ib;
-            var uilist = canvas1.Children.Cast<UIElement>().ToList();
-            uilist.ForEach (p => newcanvas.Children.Add(ImageHelpers.cloneElement(p))) ;
+            //var uilist = canvas1.Children.Cast<UIElement>().ToList();
+            //uilist.ForEach (p => newcanvas.Children.Add(ImageHelpers.cloneElement(p))) ;
 
 
-            RenderTargetBitmap bmp = ImageHelpers.snipCanvas(newcanvas, bitmap, ImageViewer1);
+            //RenderTargetBitmap bmp = ImageHelpers.snipCanvas(newcanvas, bitmap, ImageViewer1);
 
 
-            layersList.Add(new Layer(bmp,"Layer",true,idx++));
+            layersList.Add(new Layer(newcanvas,"Layer "+idx,true,idx++));
 
             layersListView.ItemsSource = null;
             layersListView.ItemsSource = layersList;
 
-            this.currentLayers.Add(layersList.Count);
+            this.currentIdx = layersList.Count-1;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -366,10 +382,39 @@ namespace Project2ImageEditor
             var r = int.Parse(chk.Uid);
             if (flag)
             {
+                var uilist = layersList[currentIdx].canvas.Children.Cast<UIElement>().ToList();
+                var ancestList = canvas1.Children.Cast<UIElement>().ToList();
 
+                foreach (UIElement layerItem in uilist)
+                {
+                    foreach (UIElement mainItem in ancestList)
+                    {
+                        if (layerItem.Equals(mainItem))
+                        {
+                            this.canvas1.Children.Add(mainItem);
+                        }
+                    }
+                }
             }
             else
             {
+                var uilist = layersList[currentIdx].canvas.Children.Cast<UIElement>().ToList();
+                var ancestList = canvas1.Children.Cast<UIElement>().ToList();
+
+
+                foreach(UIElement layerItem in uilist)
+                {
+                    foreach(UIElement mainItem in ancestList)
+                    {
+                        if (layerItem.Equals(mainItem))
+                        {
+                            this.canvas1.Children.Remove(mainItem);
+                        }
+                    }
+                }
+
+
+
 
             }
         }
@@ -377,6 +422,11 @@ namespace Project2ImageEditor
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             handle(sender as CheckBox);
+        }
+
+        private void Canvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            MessageBox.Show("fuck adnana");
         }
     }
 }

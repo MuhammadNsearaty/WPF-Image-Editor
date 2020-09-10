@@ -16,6 +16,7 @@ namespace Project2ImageEditor
         public String str { get; set; }
         public Boolean isChecked { get; set; }
 
+
         public int idx {get;set;}
         public Layer()
         {
@@ -27,11 +28,16 @@ namespace Project2ImageEditor
             this.isChecked = isChecked;
             this.idx = idx;
         }
-        public Layer(Canvas canvas, String str, Boolean isChecked)
+        public Layer(Canvas canvas, String str, Boolean isChecked,int idx)
         {
             this.canvas = canvas;
+            this.canvas.Height = 80;
+            this.canvas.Width = 80;
             this.str = str;
             this.isChecked = isChecked;
+            this.idx = idx;
         }
+
+       
     }
 }

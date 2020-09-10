@@ -252,7 +252,9 @@
                     <GridViewColumn Header="image">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Margin="5,0" Source="{Binding Path=bmp}" Width="80" Height="80"/>
+                                <Canvas Height="80" Width="80" DataContextChanged="Canvas_DataContextChanged">
+                                    <ContentPresenter Content="{Binding Path= canvas}"/>
+                                </Canvas>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

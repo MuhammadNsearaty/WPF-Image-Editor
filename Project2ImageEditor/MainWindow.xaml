@@ -266,7 +266,7 @@
                     <GridViewColumn Header="checkBox">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox Margin="2,0" Checked="CheckBox_Checked" IsChecked="{Binding Path=isChecked}"/>
+                                <CheckBox Margin="2,0" Uid="{Binding idx}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding Path=isChecked}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -15,14 +15,17 @@ namespace Project2ImageEditor
 
         public String str { get; set; }
         public Boolean isChecked { get; set; }
+
+        public int idx {get;set;}
         public Layer()
         {
         }
-        public Layer(RenderTargetBitmap bmp, String str ,Boolean isChecked)
+        public Layer(RenderTargetBitmap bmp, String str ,Boolean isChecked, int idx)
         {
             this.bmp = bmp;
             this.str = str;
             this.isChecked = isChecked;
+            this.idx = idx;
         }
         public Layer(Canvas canvas, String str, Boolean isChecked)
         {

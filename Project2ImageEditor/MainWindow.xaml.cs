@@ -33,8 +33,10 @@ namespace Project2ImageEditor
     {
 
         List<Layer> layersList = new List<Layer>();
-        List<Canvas> canvasList = new List<Canvas>();
+        //List<Canvas> canvasList = new List<Canvas>();
         List<int> currentLayers = new List<int>();
+        int currentLayer = 0;
+        int idx = 0;
         
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
@@ -346,7 +348,7 @@ namespace Project2ImageEditor
             RenderTargetBitmap bmp = ImageHelpers.snipCanvas(newcanvas, bitmap, ImageViewer1);
 
 
-            layersList.Add(new Layer(bmp,"Layer",true));
+            layersList.Add(new Layer(bmp,"Layer",true,idx++));
 
             layersListView.ItemsSource = null;
             layersListView.ItemsSource = layersList;
@@ -361,11 +363,20 @@ namespace Project2ImageEditor
         public void handle(CheckBox chk)
         {
             bool flag = chk.IsChecked.Value;
-            var r = layersListView.Items.IndexOf(chk);
+            var r = int.Parse(chk.Uid);
             if (flag)
             {
 
             }
+            else
+            {
+
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            handle(sender as CheckBox);
         }
     }
 }

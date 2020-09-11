@@ -35,6 +35,7 @@ namespace Project2ImageEditor
         List<Layer> layersList = new List<Layer>();
         int currentIdx = 0;
         int idx = 0;
+        int nxtId = 0;
         
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
@@ -79,14 +80,17 @@ namespace Project2ImageEditor
                         rectangle.Fill = br;
                         Canvas.SetLeft(rectangle, currentPoint.X);
                         Canvas.SetTop(rectangle, currentPoint.Y);
+                        rectangle.Uid = ""+nxtId;
                         canvas1.Children.Add(rectangle);
 
                         newRect =  new Rectangle { StrokeThickness = slider.Value };
+                        newRect.Uid = ""+nxtId;
+                        nxtId++;
 
                         newRect.Stroke = br;
                         newRect.Fill = br;
-                        double dimW = 80/canvas1.ActualWidth ;
-                        double dimH = 80 / canvas1.ActualHeight;
+                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth ;
+                        double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
 
                         Canvas.SetLeft(newRect, currentPoint.X * dimW);
                         Canvas.SetTop(newRect, currentPoint.Y * dimH);
@@ -107,14 +111,20 @@ namespace Project2ImageEditor
                         cirlce.Fill = br;
                         Canvas.SetLeft(cirlce, currentPoint.X);
                         Canvas.SetTop(cirlce, currentPoint.X);
+                        cirlce.Uid = ""+nxtId;
                         canvas1.Children.Add(cirlce);
 
                         newCir = new Ellipse
                         {
                             StrokeThickness = slider.Value
                         };
-                        double dimW = 80 / canvas1.ActualWidth;
-                        double dimH = 80 / canvas1.ActualHeight;
+                        newCir.Uid = ""+nxtId;
+                        nxtId++;
+                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                        double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
+
+
+
 
                         newCir.Stroke = br;
                         newCir.Fill = br;
@@ -158,7 +168,6 @@ namespace Project2ImageEditor
                     case "rect":
                         {
                             if (e.LeftButton == MouseButtonState.Released || rectangle == null)
-                                //newRect = null;
                                 return;
 
                             var pos = e.GetPosition(canvas1);
@@ -174,12 +183,14 @@ namespace Project2ImageEditor
                             rectangle.Width = w;
                             rectangle.Height = h;
 
+                            
+
                             Canvas.SetLeft(rectangle, x);
                             Canvas.SetTop(rectangle, y);
 
 
-                            double dimW = 80 / canvas1.ActualWidth;
-                            double dimH = 80 / canvas1.ActualHeight;
+                            double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                            double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
 
                             Point point = new Point(currentPoint.X,currentPoint.Y);
                             point.X *= dimW;
@@ -224,8 +235,8 @@ namespace Project2ImageEditor
                             Canvas.SetLeft(cirlce, x);
                             Canvas.SetTop(cirlce, y);
 
-                            double dimW = 80 / canvas1.ActualWidth;
-                            double dimH = 80 / canvas1.ActualHeight;
+                            double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                            double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
                             Point point = new Point(currentPoint.X*dimW, currentPoint.Y*dimH);
                             
                             // Set the position of rectangle
@@ -402,8 +413,7 @@ namespace Project2ImageEditor
         private void addLayerButton_Click(object sender, RoutedEventArgs e)
         {
             Canvas newcanvas = new Canvas();
-            newcanvas.Height = 130;
-            newcanvas.Width = 164;
+           
 
             newcanvas.Children.Clear();
             ImageBrush ib = new ImageBrush();
@@ -421,13 +431,7 @@ namespace Project2ImageEditor
 
             ib.ImageSource = bitmap;
             newcanvas.Background = ib;
-            //var uilist = canvas1.Children.Cast<UIElement>().ToList();
-            //uilist.ForEach (p => newcanvas.Children.Add(ImageHelpers.cloneElement(p))) ;
-
-
-            //RenderTargetBitmap bmp = ImageHelpers.snipCanvas(newcanvas, bitmap, ImageViewer1);
-
-
+            
             layersList.Add(new Layer(newcanvas,"Layer "+idx,true,idx++));
 
             layersListView.ItemsSource = null;
@@ -443,26 +447,38 @@ namespace Project2ImageEditor
         public void handle(CheckBox chk)
         {
             bool flag = chk.IsChecked.Value;
-            var r = int.Parse(chk.Uid);
+            int itemId = int.Parse(chk.Uid);
             if (flag)
             {
-                var uilist = layersList[currentIdx].canvas.Children.Cast<UIElement>().ToList();
-                var ancestList = canvas1.Children.Cast<UIElement>().ToList();
+                var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
 
                 foreach (UIElement layerItem in uilist)
                 {
-                    foreach (UIElement mainItem in ancestList)
-                    {
-                        if (layerItem.Equals(mainItem))
-                        {
-                            this.canvas1.Children.Add(mainItem);
-                        }
-                    }
+                    double top = (double)layerItem.GetValue(Canvas.TopProperty);
+                    double left = (double)layerItem.GetValue(Canvas.LeftProperty);
+
+                    string itemXaml = XamlWriter.Save(layerItem);
+                    StringReader stringReader = new StringReader(itemXaml);
+                    XmlReader xmlReader = XmlReader.Create(stringReader);
+                    UIElement newItem = (UIElement)XamlReader.Load(xmlReader);
+
+                    double dimW =  canvas1.ActualWidth/ layersList[itemId].canvas.ActualWidth;
+                    double dimH =  canvas1.ActualHeight/ layersList[itemId].canvas.ActualHeight;
+
+
+                    (newItem as FrameworkElement).Width *= dimW;
+                    (newItem as FrameworkElement).Height *= dimH;
+
+                    Canvas.SetTop(newItem, top*dimH);
+                    Canvas.SetLeft(newItem, left*dimW);
+
+                    this.canvas1.Children.Add(newItem);
+
                 }
             }
             else
             {
-                var uilist = layersList[currentIdx].canvas.Children.Cast<UIElement>().ToList();
+                var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
 
 
@@ -470,7 +486,8 @@ namespace Project2ImageEditor
                 {
                     foreach(UIElement mainItem in ancestList)
                     {
-                        if (layerItem.Equals(mainItem))
+                        
+                        if (layerItem.Uid.Equals(mainItem.Uid))
                         {
                             this.canvas1.Children.Remove(mainItem);
                         }
@@ -488,9 +505,5 @@ namespace Project2ImageEditor
             handle(sender as CheckBox);
         }
 
-        private void Canvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            MessageBox.Show("fuck adnana");
-        }
     }
 }

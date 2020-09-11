@@ -15,6 +15,7 @@
     <Grid>
 
         <Canvas x:Name="canvas1"
+                SnapsToDevicePixels="True"
                 RenderTransformOrigin=".5,.5"
                 Margin="261,10,9.6,188.8"
                 MouseDown="Canvas_MouseDown"
@@ -26,7 +27,7 @@
             <Image Name="ImageViewer1"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"
-                   Height="492"
+                   Height="502"
                    Canvas.Left="10"
                    Width="703"
                    Canvas.Top="10" />
@@ -252,7 +253,7 @@
                     <GridViewColumn Header="image">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Canvas Height="80" Width="80" DataContextChanged="Canvas_DataContextChanged">
+                                <Canvas Height="80" Width="80" >
                                     <ContentPresenter Content="{Binding Path= canvas}"/>
                                 </Canvas>
                             </DataTemplate>

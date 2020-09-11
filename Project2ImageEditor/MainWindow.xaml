@@ -243,6 +243,7 @@
                  VerticalAlignment="Top"
                  Width="228"
                  Padding="0,0,0,0">
+            
             <ListView.View>
                 <GridView x:Name="my_dataGrid">
                     <GridView.ColumnHeaderContainerStyle>
@@ -253,7 +254,7 @@
                     <GridViewColumn Header="image">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Canvas Height="80" Width="80" >
+                                <Canvas Height="80" Width="80" Uid="{Binding idx}" MouseDown="listView_Click">
                                     <ContentPresenter Content="{Binding Path= canvas}"/>
                                 </Canvas>
                             </DataTemplate>
@@ -262,7 +263,7 @@
                     <GridViewColumn Header="label">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Label Margin="2,0" Content="{Binding Path=str}"/>
+                                <Label Margin="2,0" Uid="{Binding idx}"  Content="{Binding Path=str}" MouseDown="listView_Click"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

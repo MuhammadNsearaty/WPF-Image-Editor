@@ -460,6 +460,11 @@ namespace Project2ImageEditor
         {
             handle(sender as CheckBox);
         }
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            handle(sender as CheckBox);
+        }
+
         public void handle(CheckBox chk)
         {
             bool flag = chk.IsChecked.Value;
@@ -521,16 +526,15 @@ namespace Project2ImageEditor
                         }
                     }
                 }
-
-
-
-
             }
         }
 
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        
+
+        private void listView_Click(object sender,MouseButtonEventArgs e)
         {
-            handle(sender as CheckBox);
+            String id = (sender as UIElement).Uid;
+            this.currentIdx = int.Parse(id);
         }
 
     }

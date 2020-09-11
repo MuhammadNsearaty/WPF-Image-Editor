@@ -61,7 +61,6 @@ namespace Project2ImageEditor
                     {
                         if (e.ButtonState == MouseButtonState.Pressed)
                             currentPoint = e.GetPosition(canvas1);
-
                         break;
                     }
                 case "rect":
@@ -158,10 +157,27 @@ namespace Project2ImageEditor
                             line.Y1 = currentPoint.Y;
                             line.X2 = e.GetPosition(canvas1).X;
                             line.Y2 = e.GetPosition(canvas1).Y;
+                            line.Uid = "" + nxtId;
+                            
+                            canvas1.Children.Add(line);
+
+                            Line newLine = new Line();
+                            double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                            double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
+
+                            newLine.StrokeThickness = this.slider.Value;
+                            newLine.Stroke = br;
+                            newLine.X1 = currentPoint.X*dimW;
+                            newLine.Y1 = currentPoint.Y*dimH;
+                            newLine.X2 = e.GetPosition(canvas1).X*dimW;
+                            newLine.Y2 = e.GetPosition(canvas1).Y*dimH;
+                            newLine.Uid = "" + nxtId;
+                            nxtId++;
+                           
+                            this.layersList[this.currentIdx].canvas.Children.Add(newLine);
 
                             currentPoint = e.GetPosition(canvas1);
-                            canvas1.Children.Add(line);
-                            this.layersList[this.currentIdx].canvas.Children.Add(line);
+
 
                             break;
                         }
@@ -465,12 +481,23 @@ namespace Project2ImageEditor
                     double dimW =  canvas1.ActualWidth/ layersList[itemId].canvas.ActualWidth;
                     double dimH =  canvas1.ActualHeight/ layersList[itemId].canvas.ActualHeight;
 
+                    Line line = newItem as Line;
+                    if (line != null)
+                    {
+                        (newItem as Line).X1 *= dimW;
+                        (newItem as Line).Y1 *= dimH;
+                        (newItem as Line).X2 *= dimW;
+                        (newItem as Line).Y2 *= dimH;
 
-                    (newItem as FrameworkElement).Width *= dimW;
-                    (newItem as FrameworkElement).Height *= dimH;
-
-                    Canvas.SetTop(newItem, top*dimH);
-                    Canvas.SetLeft(newItem, left*dimW);
+                    }
+                    else
+                    {
+                        (newItem as System.Windows.Shapes.Shape).Width *= dimW;
+                        (newItem as System.Windows.Shapes.Shape).Height *= dimH;
+                        Canvas.SetTop(newItem, top * dimH);
+                        Canvas.SetLeft(newItem, left * dimW);
+                    }
+                    
 
                     this.canvas1.Children.Add(newItem);
 
@@ -490,6 +517,7 @@ namespace Project2ImageEditor
                         if (layerItem.Uid.Equals(mainItem.Uid))
                         {
                             this.canvas1.Children.Remove(mainItem);
+                            break;
                         }
                     }
                 }

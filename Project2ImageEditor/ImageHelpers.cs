@@ -25,6 +25,21 @@ namespace Project2ImageEditor
                 return true;
             return false;
         }
+        public static BitmapSource Convert(System.Drawing.Bitmap bitmap)
+        {
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            var bitmapSource = BitmapSource.Create(
+                bitmapData.Width, bitmapData.Height,
+                bitmap.HorizontalResolution, bitmap.VerticalResolution,
+                PixelFormats.Bgr24, null,
+                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+            return bitmapSource;
+        }
         /*public static void Crop()
         {
             if (rectH == 0 || rectW == 0)
@@ -49,24 +64,40 @@ namespace Project2ImageEditor
             }
         }*/
 
-        public static RenderTargetBitmap snipCanvas(Canvas canvas ,BitmapImage bitmap,System.Windows.Controls.Image ImageViewer1)
+        public static RenderTargetBitmap snipCanvas(Canvas canvas , System.Windows.Size size)
         {
-            double width = bitmap.Width;
-            double height = bitmap.Height;
-            System.Windows.Size size = ImageViewer1.RenderSize;
+            //int width = (int)canvas.ActualWidth;
+            //int height = (int)canvas.ActualHeight;
             canvas.Measure(size);
             canvas.Arrange(new Rect(size)); // This is important
-
-            RenderTargetBitmap bmpCopied = new RenderTargetBitmap((int)Math.Round(width), (int)Math.Round(height), 96, 96, PixelFormats.Default);
+            RenderTargetBitmap bmpCopied = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32);
             DrawingVisual dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
             {
                 VisualBrush vb = new VisualBrush(canvas);
-                dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(), new System.Windows.Size(width, height)));
+                dc.DrawRectangle(vb, null, new Rect(new System.Windows.Point(), new System.Windows.Size(size.Width, size.Height)));
             }
             bmpCopied.Render(dv);
 
             return bmpCopied;
+        }
+        public static Bitmap newSnip(Canvas canvas,System.Windows.Point p,double w,double h)
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)canvas.RenderSize.Width,
+    (int)canvas.RenderSize.Height, 96d, 96d, System.Windows.Media.PixelFormats.Default);
+            rtb.Render(canvas);
+            Bitmap myBitmap;
+            var crop = new CroppedBitmap(rtb, new Int32Rect((int)p.X, (int)p.Y, (int)w, (int)h));
+
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(crop));
+
+            using (Stream s = new MemoryStream())
+            {
+                pngEncoder.Save(s);
+                myBitmap = new Bitmap(s);
+            }
+            return myBitmap;
         }
         public static UIElement cloneElement(UIElement orig)
         {

@@ -23,6 +23,7 @@ using ImageProcessor.Imaging.Filters.Photo;
 using System.Collections.ObjectModel;
 using System.Windows.Markup;
 using System.Xml;
+using AForge.Imaging.Filters;
 
 namespace Project2ImageEditor
 {
@@ -33,10 +34,11 @@ namespace Project2ImageEditor
     {
         bool getout = false;
         Rectangle selectionBox = null;
+        Rectangle cropBox = null;
         List<Layer> layersList = new List<Layer>();
         int currentIdx = 0;
         int idx = 0;
-        int nxtId = 1;
+        int nxtId = 2;
         
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
@@ -82,11 +84,6 @@ namespace Project2ImageEditor
                 case "rect":
                     {
                         currentPoint = e.GetPosition(canvas1);
-                        Point selectionPoint = new Point((double)this.selectionBox.GetValue(Canvas.LeftProperty), (double)this.selectionBox.GetValue(Canvas.TopProperty));
-
-
-                        // Initialize the rectangle.
-                        // Set border color and width
                         SolidColorBrush br = new SolidColorBrush();
                         br.Color = (Color)clrPick.Color;
                         rectangle = new Rectangle
@@ -95,27 +92,19 @@ namespace Project2ImageEditor
                         };
                         rectangle.Stroke = br;
                         rectangle.Fill = br;
-
-
-
                         Canvas.SetLeft(rectangle, currentPoint.X);
                         Canvas.SetTop(rectangle, currentPoint.Y);
                         rectangle.Uid = "" + nxtId;
                         canvas1.Children.Add(rectangle);
-
-
                         newRect = new Rectangle { StrokeThickness = slider.Value };
                         newRect.Uid = "" + nxtId;
                         nxtId++;
-
                         newRect.Stroke = br;
                         newRect.Fill = br;
                         double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
                         double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
-
                         Canvas.SetLeft(newRect, currentPoint.X * dimW);
                         Canvas.SetTop(newRect, currentPoint.Y * dimH);
-
                         this.layersList[this.currentIdx].canvas.Children.Add(newRect);
                         break;
                     }
@@ -165,13 +154,13 @@ namespace Project2ImageEditor
                         // Initialize the rectangle.
                         // Set border color and width
                         SolidColorBrush br = new SolidColorBrush();
-                        br.Color = (Color)clrPick.Color;
+                        br.Color = Colors.LightGray;
                         selectionBox = new Rectangle
                         {
                             StrokeThickness = slider.Value
                         };
                         selectionBox.Stroke = br;
-
+                        selectionBox.StrokeDashArray = new DoubleCollection() { 2 };
 
 
                         Canvas.SetLeft(selectionBox, currentPoint.X);
@@ -182,7 +171,6 @@ namespace Project2ImageEditor
 
                         newRect = new Rectangle { StrokeThickness = slider.Value };
                         newRect.Uid = "" + 0;
-                        nxtId++;
 
                         newRect.Stroke = br;
                         double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
@@ -192,6 +180,25 @@ namespace Project2ImageEditor
                         Canvas.SetTop(newRect, currentPoint.Y * dimH);
 
                         this.layersList[this.currentIdx].canvas.Children.Add(newRect);
+                        break;
+                    }
+                case "crop":
+                    {
+                        currentPoint = e.GetPosition(canvas1);
+                        SolidColorBrush br = new SolidColorBrush();
+                        br.Color = Colors.LightGray;
+                        cropBox = new Rectangle
+                        {
+                            StrokeThickness = slider.Value
+                        };
+                        cropBox.Stroke = br;
+                        
+                        cropBox.StrokeDashArray = new DoubleCollection() { 2 };
+                        cropBox.Uid = "" + 1;
+                        Canvas.SetLeft(cropBox, currentPoint.X);
+                        Canvas.SetTop(cropBox, currentPoint.Y);
+
+                        canvas1.Children.Add(cropBox);
                         break;
                     }
                 case "none":
@@ -397,6 +404,29 @@ namespace Project2ImageEditor
                         Canvas.SetTop(newRect, y1);
                         break;
                 }
+                    case "crop":
+                        {
+
+                            if (e.LeftButton == MouseButtonState.Released || cropBox == null)
+                                return;
+
+                            var pos = e.GetPosition(canvas1);
+
+                            // Set the position of rectangle
+                            var x = Math.Min(pos.X, currentPoint.X);
+                            var y = Math.Min(pos.Y, currentPoint.Y);
+
+                            // Set the dimenssion of the rectangle
+                            var w = Math.Max(pos.X, currentPoint.X) - x;
+                            var h = Math.Max(pos.Y, currentPoint.Y) - y;
+
+                            cropBox.Width = w;
+                            cropBox.Height = h;
+
+                            Canvas.SetLeft(cropBox, x);
+                            Canvas.SetTop(cropBox, y);
+                            break;
+                        }
                     case "none":
                         break;
                 }
@@ -412,9 +442,9 @@ namespace Project2ImageEditor
 
         private void newSave(object sender, RoutedEventArgs e)
         {
-            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, bitmap, ImageViewer1);
+            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width,(int)bitmap.Height));
 
-
+            
             JpegBitmapEncoder jpg = new JpegBitmapEncoder();
             jpg.Frames.Add(BitmapFrame.Create(bmpCopied));
             using (Stream stm = File.Create("c:\\temp\\test.jpeg"))
@@ -442,8 +472,6 @@ namespace Project2ImageEditor
             penButton.IsEnabled = false;
             circleButton.IsEnabled = true;
             RectButton.IsEnabled = true;
-            cropButton.IsEnabled = true;
-
             this.flag = "pen";
         }
 
@@ -452,8 +480,6 @@ namespace Project2ImageEditor
             RectButton.IsEnabled = false;
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
-            cropButton.IsEnabled = true;
-
             this.flag = "rect";
         }
 
@@ -462,7 +488,6 @@ namespace Project2ImageEditor
             circleButton.IsEnabled = false;
             penButton.IsEnabled = true;
             RectButton.IsEnabled = true;
-            cropButton.IsEnabled = true;
             this.flag = "circle";
         }
 
@@ -492,9 +517,6 @@ namespace Project2ImageEditor
             this.layersListView.ItemsSource = layersList;
             this.currentIdx = 0;
             this.idx++;
-
-            //this.selectionBox.Width = ImageViewer1.Width;
-            //this.selectionBox.Height = ImageViewer1.Height;
         }
         private void Comic_Click(object sender, RoutedEventArgs e)
 
@@ -672,22 +694,19 @@ namespace Project2ImageEditor
 
         }
 
-        private void selectionButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
+        
 
-        private void cropButton_Click(object sender, RoutedEventArgs e)
+        private void selectionButton_Click(object sender, RoutedEventArgs e)
         {
             if (selectionBox == null)
             {
-                cropButton.Background = Brushes.Red;
+                selectButton.Background = Brushes.Red;
                 this.flag = "select";
             }
             else
             {
                 this.flag = "none";
-                cropButton.Background = Brushes.Transparent;
+                selectButton.Background = Brushes.Transparent;
                 selectionBox = null;
 
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
@@ -713,6 +732,48 @@ namespace Project2ImageEditor
 
 
 
+            }
+        }
+
+        private void cropButton_Click(object sender, RoutedEventArgs e)
+        {
+            cropButton.IsEnabled = false;
+            RectButton.IsEnabled = true;
+            penButton.IsEnabled = true;
+            circleButton.IsEnabled = true;
+            this.flag = "crop";
+        }
+
+        private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(flag == "crop")
+            {
+                Point begin = new Point((double)cropBox.GetValue(Canvas.LeftProperty), (double)cropBox.GetValue(Canvas.TopProperty));
+                double w = cropBox.Width;double h = cropBox.Height;
+                System.Drawing.Image newImage;
+                RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)ImageViewer1.Width,(int)ImageViewer1.Height));
+
+                var bitmapEncoder = new PngBitmapEncoder();
+                bitmapEncoder.Frames.Add(BitmapFrame.Create(bmp));
+                using (var stream = new MemoryStream())
+                {
+                    bitmapEncoder.Save(stream);
+                    newImage = System.Drawing.Image.FromStream(stream);
+                }
+
+                var imageFactory = new ImageFactory(false);
+
+
+                imageFactory.Load(newImage).Crop(new System.Drawing.Rectangle((int)begin.X,(int) begin.Y, (int)w, (int)h));
+
+
+                System.Drawing.Image tmp = imageFactory.Image;
+
+                BitmapSource source = ImageHelpers.GetImageStream(tmp);
+
+                ImageViewer1.Source = source;
+
+                
             }
         }
     }

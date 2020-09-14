@@ -19,7 +19,8 @@
                 RenderTransformOrigin=".5,.5"
                 Margin="261,10,9.6,188.8"
                 MouseDown="Canvas_MouseDown"
-                MouseMove="Canvas_MouseMove">
+                MouseMove="Canvas_MouseMove"
+                MouseLeftButtonUp="canvas1_MouseLeftButtonUp">
             <Canvas.Background>
                 <SolidColorBrush x:Name="brush"
                                  Opacity="0" />
@@ -27,10 +28,8 @@
             <Image Name="ImageViewer1"
                    HorizontalAlignment="Left"
                    VerticalAlignment="Top"
-                   Height="502"
-                   Canvas.Left="10"
-                   Width="703"
-                   Canvas.Top="10" />
+                   Height="522"
+                   Width="723" />
         </Canvas>
         <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Background="Transparent"
@@ -129,16 +128,17 @@
                     Click="eraserButton_Click" Margin="0">
                 <Image Source="Resources\icons\icons8-eraser-64.png" Width="22" Height="22"/>
             </Button>
-            <Button x:Name="selectionButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+
+            <Button x:Name="selectButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
                     Click="selectionButton_Click" Margin="0">
                 <Image Source="Resources\icons\icons8-select-64.png" Width="22" Height="22"/>
+
             </Button>
             <Button x:Name="cropButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
                     Click="cropButton_Click" Margin="0">
-                <Image Source="Resources\icons\icons8-gimp-64.png" Width="22" Height="22"/>
+                <Image Source="Resources\icons\icons8-crop-64.png" Width="22" Height="22"/>
 
             </Button>
-
 
 
             <materialDesign:ColorPicker Width="163"

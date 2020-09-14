@@ -34,8 +34,8 @@
         </Canvas>
         <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Background="Transparent"
-                 Margin="15,24,765.6,0"
-                 Height="318"
+                 Margin="10,10,765.6,0"
+                 Height="332"
                  VerticalAlignment="Top">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -124,6 +124,19 @@
                 <Image Source="Resources\icons\filled-circle.png"
                        Height="22"
                        Width="22" />
+            </Button>
+            <Button x:Name="eraserButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                    Click="eraserButton_Click" Margin="0">
+                <Image Source="Resources\icons\icons8-eraser-64.png" Width="22" Height="22"/>
+            </Button>
+            <Button x:Name="selectionButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                    Click="selectionButton_Click" Margin="0">
+                <Image Source="Resources\icons\icons8-select-64.png" Width="22" Height="22"/>
+            </Button>
+            <Button x:Name="cropButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                    Click="cropButton_Click" Margin="0">
+                <Image Source="Resources\icons\icons8-gimp-64.png" Width="22" Height="22"/>
+
             </Button>
 
 
@@ -241,14 +254,14 @@
                  Height="364"
                  Margin="0,347,765.6,0"
                  VerticalAlignment="Top"
-                 Width="228"
+                 Width="218"
                  Padding="0,0,0,0">
-            
+
             <ListView.View>
                 <GridView x:Name="my_dataGrid">
                     <GridView.ColumnHeaderContainerStyle>
                         <Style TargetType="{x:Type GridViewColumnHeader}">
-                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
                         </Style>
                     </GridView.ColumnHeaderContainerStyle>
                     <GridViewColumn Header="image">

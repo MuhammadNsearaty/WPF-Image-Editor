@@ -31,11 +31,12 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        bool getout = false;
+        Rectangle selectionBox = null;
         List<Layer> layersList = new List<Layer>();
         int currentIdx = 0;
         int idx = 0;
-        int nxtId = 0;
+        int nxtId = 1;
         
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
@@ -55,6 +56,21 @@ namespace Project2ImageEditor
         
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if(flag != "select")
+            {
+                if (selectionBox != null)
+                {
+                    currentPoint = e.GetPosition(canvas1);
+                    Point begin = new Point((double)selectionBox.GetValue(Canvas.LeftProperty), (double)selectionBox.GetValue(Canvas.TopProperty));
+                    bool res = ImageHelpers.CheckInside(begin, selectionBox.Width, selectionBox.Height, currentPoint);
+                    if (!res)
+                    {
+                        getout = true;
+                        return;
+                    }
+                    getout = false;
+                }
+            }
             switch (flag)
             {
                 case "pen":
@@ -65,30 +81,36 @@ namespace Project2ImageEditor
                     }
                 case "rect":
                     {
-                        currentPoint= e.GetPosition(canvas1);
+                        currentPoint = e.GetPosition(canvas1);
+                        Point selectionPoint = new Point((double)this.selectionBox.GetValue(Canvas.LeftProperty), (double)this.selectionBox.GetValue(Canvas.TopProperty));
+
 
                         // Initialize the rectangle.
                         // Set border color and width
-                         SolidColorBrush br = new SolidColorBrush();
-                         br.Color = (Color)clrPick.Color;
+                        SolidColorBrush br = new SolidColorBrush();
+                        br.Color = (Color)clrPick.Color;
                         rectangle = new Rectangle
                         {
                             StrokeThickness = slider.Value
                         };
                         rectangle.Stroke = br;
                         rectangle.Fill = br;
+
+
+
                         Canvas.SetLeft(rectangle, currentPoint.X);
                         Canvas.SetTop(rectangle, currentPoint.Y);
-                        rectangle.Uid = ""+nxtId;
+                        rectangle.Uid = "" + nxtId;
                         canvas1.Children.Add(rectangle);
 
-                        newRect =  new Rectangle { StrokeThickness = slider.Value };
-                        newRect.Uid = ""+nxtId;
+
+                        newRect = new Rectangle { StrokeThickness = slider.Value };
+                        newRect.Uid = "" + nxtId;
                         nxtId++;
 
                         newRect.Stroke = br;
                         newRect.Fill = br;
-                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth ;
+                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
                         double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
 
                         Canvas.SetLeft(newRect, currentPoint.X * dimW);
@@ -110,14 +132,14 @@ namespace Project2ImageEditor
                         cirlce.Fill = br;
                         Canvas.SetLeft(cirlce, currentPoint.X);
                         Canvas.SetTop(cirlce, currentPoint.X);
-                        cirlce.Uid = ""+nxtId;
+                        cirlce.Uid = "" + nxtId;
                         canvas1.Children.Add(cirlce);
 
                         newCir = new Ellipse
                         {
                             StrokeThickness = slider.Value
                         };
-                        newCir.Uid = ""+nxtId;
+                        newCir.Uid = "" + nxtId;
                         nxtId++;
                         double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
                         double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
@@ -127,13 +149,50 @@ namespace Project2ImageEditor
 
                         newCir.Stroke = br;
                         newCir.Fill = br;
-                        Canvas.SetLeft(newCir, currentPoint.X*dimW);
-                        Canvas.SetTop(newCir, currentPoint.X*dimH);
+                        Canvas.SetLeft(newCir, currentPoint.X * dimW);
+                        Canvas.SetTop(newCir, currentPoint.X * dimH);
 
                         this.layersList[this.currentIdx].canvas.Children.Add(newCir);
 
                         break;
 
+                    }
+                case "select":
+                    {
+                        
+                        currentPoint = e.GetPosition(canvas1);
+
+                        // Initialize the rectangle.
+                        // Set border color and width
+                        SolidColorBrush br = new SolidColorBrush();
+                        br.Color = (Color)clrPick.Color;
+                        selectionBox = new Rectangle
+                        {
+                            StrokeThickness = slider.Value
+                        };
+                        selectionBox.Stroke = br;
+
+
+
+                        Canvas.SetLeft(selectionBox, currentPoint.X);
+                        Canvas.SetTop(selectionBox, currentPoint.Y);
+                        selectionBox.Uid = "" + 0;
+                        canvas1.Children.Add(selectionBox);
+
+
+                        newRect = new Rectangle { StrokeThickness = slider.Value };
+                        newRect.Uid = "" + 0;
+                        nxtId++;
+
+                        newRect.Stroke = br;
+                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                        double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
+
+                        Canvas.SetLeft(newRect, currentPoint.X * dimW);
+                        Canvas.SetTop(newRect, currentPoint.Y * dimH);
+
+                        this.layersList[this.currentIdx].canvas.Children.Add(newRect);
+                        break;
                     }
                 case "none":
                     break;
@@ -145,7 +204,27 @@ namespace Project2ImageEditor
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                switch(this.flag){
+                if (flag != "select")
+                {
+                    if (selectionBox != null)
+                    {
+                        Point tmp;
+                        if (flag == "pen")
+                            tmp = currentPoint;
+                        else
+                            tmp = e.GetPosition(canvas1);
+                        Point begin = new Point((double)selectionBox.GetValue(Canvas.LeftProperty), (double)selectionBox.GetValue(Canvas.TopProperty));
+                        bool res = ImageHelpers.CheckInside(begin, selectionBox.Width, selectionBox.Height, tmp);
+                        Console.WriteLine(tmp);
+                        if (!res)
+                        {
+                            Console.WriteLine("fuck my life get out");
+                            return;
+                        }
+                       
+                    }
+                }
+                switch (this.flag) {
                     case "pen":
                         {
                             Line line = new Line();
@@ -158,7 +237,7 @@ namespace Project2ImageEditor
                             line.X2 = e.GetPosition(canvas1).X;
                             line.Y2 = e.GetPosition(canvas1).Y;
                             line.Uid = "" + nxtId;
-                            
+
                             canvas1.Children.Add(line);
 
                             Line newLine = new Line();
@@ -167,13 +246,13 @@ namespace Project2ImageEditor
 
                             newLine.StrokeThickness = this.slider.Value;
                             newLine.Stroke = br;
-                            newLine.X1 = currentPoint.X*dimW;
-                            newLine.Y1 = currentPoint.Y*dimH;
-                            newLine.X2 = e.GetPosition(canvas1).X*dimW;
-                            newLine.Y2 = e.GetPosition(canvas1).Y*dimH;
+                            newLine.X1 = currentPoint.X * dimW;
+                            newLine.Y1 = currentPoint.Y * dimH;
+                            newLine.X2 = e.GetPosition(canvas1).X * dimW;
+                            newLine.Y2 = e.GetPosition(canvas1).Y * dimH;
                             newLine.Uid = "" + nxtId;
                             nxtId++;
-                           
+
                             this.layersList[this.currentIdx].canvas.Children.Add(newLine);
 
                             currentPoint = e.GetPosition(canvas1);
@@ -193,26 +272,25 @@ namespace Project2ImageEditor
                             var y = Math.Min(pos.Y, currentPoint.Y);
 
                             // Set the dimenssion of the rectangle
-                            var w = Math.Max(pos.X, currentPoint.X)-x;
-                            var h = Math.Max(pos.Y, currentPoint.Y)-y;
+                            var w = Math.Max(pos.X, currentPoint.X) - x;
+                            var h = Math.Max(pos.Y, currentPoint.Y) - y;
 
                             rectangle.Width = w;
                             rectangle.Height = h;
-
-                            
 
                             Canvas.SetLeft(rectangle, x);
                             Canvas.SetTop(rectangle, y);
 
 
+
                             double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
                             double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
 
-                            Point point = new Point(currentPoint.X,currentPoint.Y);
+                            Point point = new Point(currentPoint.X, currentPoint.Y);
                             point.X *= dimW;
                             point.Y *= dimH;
                             // Set the position of rectangle
-                            var x1 = Math.Min(pos.X*dimW, point.X);
+                            var x1 = Math.Min(pos.X * dimW, point.X);
                             var y1 = Math.Min(pos.Y * dimH, point.Y);
 
                             // Set the dimenssion of the rectangle
@@ -242,8 +320,8 @@ namespace Project2ImageEditor
                             var y = Math.Min(pos.Y, currentPoint.Y);
 
                             // Set the dimenssion of the rectangle
-                            var w = Math.Max(pos.X, currentPoint.X)-x;
-                            var h = Math.Max(pos.Y, currentPoint.Y)-y;
+                            var w = Math.Max(pos.X, currentPoint.X) - x;
+                            var h = Math.Max(pos.Y, currentPoint.Y) - y;
 
                             cirlce.Width = w;
                             cirlce.Height = h;
@@ -253,15 +331,15 @@ namespace Project2ImageEditor
 
                             double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
                             double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
-                            Point point = new Point(currentPoint.X*dimW, currentPoint.Y*dimH);
-                            
+                            Point point = new Point(currentPoint.X * dimW, currentPoint.Y * dimH);
+
                             // Set the position of rectangle
-                            var x1 = Math.Min(pos.X*dimW, point.X);
-                            var y1 = Math.Min(pos.Y*dimH, point.Y);
+                            var x1 = Math.Min(pos.X * dimW, point.X);
+                            var y1 = Math.Min(pos.Y * dimH, point.Y);
 
                             // Set the dimenssion of the rectangle
                             var w1 = Math.Max(pos.X * dimW, point.X) - x1;
-                            var h1 = Math.Max(pos.Y*dimH, point.Y) - y1;
+                            var h1 = Math.Max(pos.Y * dimH, point.Y) - y1;
 
                             newCir.Width = w1;
                             newCir.Height = h1;
@@ -271,6 +349,54 @@ namespace Project2ImageEditor
                             break;
 
                         }
+                    case "select":
+                        { 
+                        if (e.LeftButton == MouseButtonState.Released || selectionBox == null || selectionBox == null)
+                            return;
+
+                        var pos = e.GetPosition(canvas1);
+
+                        // Set the position of rectangle
+                        var x = Math.Min(pos.X, currentPoint.X);
+                        var y = Math.Min(pos.Y, currentPoint.Y);
+
+                        // Set the dimenssion of the rectangle
+                        var w = Math.Max(pos.X, currentPoint.X) - x;
+                        var h = Math.Max(pos.Y, currentPoint.Y) - y;
+
+                        selectionBox.Width = w;
+                        selectionBox.Height = h;
+
+
+
+
+
+                        Canvas.SetLeft(selectionBox, x);
+                        Canvas.SetTop(selectionBox, y);
+
+
+
+                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                        double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
+
+                        Point point = new Point(currentPoint.X, currentPoint.Y);
+                        point.X *= dimW;
+                        point.Y *= dimH;
+                        // Set the position of rectangle
+                        var x1 = Math.Min(pos.X * dimW, point.X);
+                        var y1 = Math.Min(pos.Y * dimH, point.Y);
+
+                        // Set the dimenssion of the rectangle
+                        var w1 = Math.Max(pos.X * dimW, point.X) - x1;
+                        var h1 = Math.Max(pos.Y * dimH, point.Y) - y1;
+
+                        newRect.Width = w1;
+                        newRect.Height = h1;
+
+                        Canvas.SetLeft(newRect, x1);
+                        Canvas.SetTop(newRect, y1);
+                        break;
+                }
                     case "none":
                         break;
                 }
@@ -316,6 +442,7 @@ namespace Project2ImageEditor
             penButton.IsEnabled = false;
             circleButton.IsEnabled = true;
             RectButton.IsEnabled = true;
+            cropButton.IsEnabled = true;
 
             this.flag = "pen";
         }
@@ -325,6 +452,7 @@ namespace Project2ImageEditor
             RectButton.IsEnabled = false;
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
+            cropButton.IsEnabled = true;
 
             this.flag = "rect";
         }
@@ -334,7 +462,7 @@ namespace Project2ImageEditor
             circleButton.IsEnabled = false;
             penButton.IsEnabled = true;
             RectButton.IsEnabled = true;
-
+            cropButton.IsEnabled = true;
             this.flag = "circle";
         }
 
@@ -364,13 +492,15 @@ namespace Project2ImageEditor
             this.layersListView.ItemsSource = layersList;
             this.currentIdx = 0;
             this.idx++;
+
+            //this.selectionBox.Width = ImageViewer1.Width;
+            //this.selectionBox.Height = ImageViewer1.Height;
         }
         private void Comic_Click(object sender, RoutedEventArgs e)
 
         {
             ImageHelpers.applyFillter("Comic", path, ImageViewer1);
         }
-
     
         private void BlackWhiteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -537,5 +667,53 @@ namespace Project2ImageEditor
             this.currentIdx = int.Parse(id);
         }
 
+        private void eraserButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void selectionButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void cropButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectionBox == null)
+            {
+                cropButton.Background = Brushes.Red;
+                this.flag = "select";
+            }
+            else
+            {
+                this.flag = "none";
+                cropButton.Background = Brushes.Transparent;
+                selectionBox = null;
+
+                var ancestList = canvas1.Children.Cast<UIElement>().ToList();
+
+                foreach(UIElement item in ancestList)
+                {
+                    if(item.Uid == "0")
+                    {
+                        canvas1.Children.Remove(item);
+                    }
+                }
+
+                var uilist = layersList[currentIdx].canvas.Children.Cast<UIElement>().ToList();
+
+
+                foreach (UIElement item in uilist)
+                {
+                    if (item.Uid == "0")
+                    {
+                        layersList[currentIdx].canvas.Children.Remove(item);
+                    }
+                }
+
+
+
+            }
+        }
     }
 }

@@ -386,7 +386,16 @@ namespace ImageEditor
         }
         public Bitmap ResizeBicubic(Bitmap img ,int width ,int high){
             ResizeBicubic filter = new ResizeBicubic( width, high );
-            return filter.Apply(img);
+
+            Bitmap clone = new Bitmap(img.Width, img.Height,
+                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            using (Graphics gr = Graphics.FromImage(clone))
+            {
+                gr.DrawImage(img, new Rectangle(0, 0, clone.Width, clone.Height));
+            }
+
+            return filter.Apply(clone);
         }
 
         public Bitmap ResizeBilinear(Bitmap img ,int width ,int high){

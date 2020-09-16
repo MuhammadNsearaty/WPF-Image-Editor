@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:Project2ImageEditor"
       mc:Ignorable="d" 
       d:DesignHeight="351.467" d:DesignWidth="633.409"
+      Width="633.409" Height="360"
       Title="Resize">
 
     <StackPanel Orientation="Horizontal">

@@ -785,10 +785,32 @@ namespace Project2ImageEditor
         }
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
-            resizeWindow.w = double.Parse(resizeWindow.widthBox.Text);
-            resizeWindow.h = double.Parse(resizeWindow.heightBox.Text);
+            resizeWindow.w = int.Parse(resizeWindow.widthBox.Text);
+            resizeWindow.h = int.Parse(resizeWindow.heightBox.Text);
             var item = (ComboBoxItem)resizeWindow.comboBox.SelectedItem;
             resizeWindow.type = item.Content.ToString();
+
+            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
+            System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h) ;
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+
+            canvas1.Children.Clear();
+            ImageViewer1.Source = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+            
+            Canvas newCanvas = new Canvas();
+            newCanvas.Background = ib;
+
+            this.layersList = new List<Layer>();
+            this.layersListView.ItemsSource = null;
+
+            this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
+            this.layersListView.ItemsSource = layersList;
+            this.currentIdx = 0;
+            this.idx++;
+
+            resizeWindow.Close();
         }
+
     }
 }

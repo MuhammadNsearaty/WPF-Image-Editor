@@ -21,8 +21,8 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class Resize : Window
     {
-        public double w { get; set; }
-        public double h {get;set;}
+        public int w { get; set; }
+        public int h {get;set;}
         public string type { get; set; }
         public Resize()
         {

@@ -1,9 +1,11 @@
-﻿using ImageProcessor;
+﻿using ImageEditor;
+using ImageProcessor;
 using ImageProcessor.Imaging.Filters.Photo;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,6 +21,59 @@ namespace Project2ImageEditor
 {
     public static class ImageHelpers
     {
+
+        public static BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
+        }
+        public static System.Drawing.Bitmap BitmapImage2Bitmap(RenderTargetBitmap bmp)
+        {
+            MemoryStream stream = new MemoryStream();
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bmp));
+            encoder.Save(stream);
+
+            Bitmap bitmap = new Bitmap(stream);
+            return bitmap;
+        }
+        public static System.Drawing.Bitmap interpolate(System.Drawing.Bitmap bitmap , string type ,int w, int h)
+        {
+            Filters filters = new Filters();
+            System.Drawing.Bitmap res = null;
+            switch (type)
+            {
+                case "Bicubic":
+                    {
+                        res = filters.ResizeBicubic(bitmap, w, h);
+                        break;
+                    }
+                case "Bilinear":
+                    {
+                        res = filters.ResizeBilinear(bitmap, w, h);
+                        break;
+                    }
+                case "Nearest Neighbor":
+                    {
+                        res = filters.ResizeNearestNeighbor(bitmap, w, h);
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            return res;
+        }
         public static bool CheckInside(System.Windows.Point begin,Double w ,Double h, System.Windows.Point p)
         {
             if (p.X < w + begin.X-0.1 && p.Y < h + begin.Y-0.1 && p.X > begin.X+0.1 && p.Y > begin.Y+0.1)
@@ -40,29 +95,7 @@ namespace Project2ImageEditor
             bitmap.UnlockBits(bitmapData);
             return bitmapSource;
         }
-        /*public static void Crop()
-        {
-            if (rectH == 0 || rectW == 0)
-                return;
-            else
-            {
-                Cursor = Cursors.Default;
-                Bitmap bmp2 = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-                pictureBox1.DrawToBitmap(bmp2, pictureBox1.ClientRectangle);
-                Bitmap crpImg = new Bitmap(rectW, rectH);
-                for (int i = 0; i < rectW; i++)
-                {
-                    for (int y = 0; y < rectH; y++)
-                    {
-                        Color pxlclr = bmp2.GetPixel(crpX + i, crpY + y);
-                        crpImg.SetPixel(i, y, pxlclr);
-                    }
-                }
-                pictureBox1.Image = (Image)crpImg;
-                myBitMap = bmp2;
-                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
-            }
-        }*/
+       
 
         public static RenderTargetBitmap snipCanvas(Canvas canvas , System.Windows.Size size)
         {

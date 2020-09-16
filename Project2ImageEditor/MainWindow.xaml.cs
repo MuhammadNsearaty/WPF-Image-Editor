@@ -32,6 +32,7 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        Resize resizeWindow = new Resize();
         bool getout = false;
         Rectangle selectionBox = null;
         Rectangle cropBox = null;
@@ -775,6 +776,19 @@ namespace Project2ImageEditor
 
                 
             }
+        }
+
+        private void resizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            resizeWindow.Show();
+            resizeWindow.submitButton.Click += new RoutedEventHandler(submitButton_Click);
+        }
+        private void submitButton_Click(object sender, RoutedEventArgs e)
+        {
+            resizeWindow.w = double.Parse(resizeWindow.widthBox.Text);
+            resizeWindow.h = double.Parse(resizeWindow.heightBox.Text);
+            var item = (ComboBoxItem)resizeWindow.comboBox.SelectedItem;
+            resizeWindow.type = item.Content.ToString();
         }
     }
 }

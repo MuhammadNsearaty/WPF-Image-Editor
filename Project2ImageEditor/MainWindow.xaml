@@ -139,6 +139,10 @@
                 <Image Source="Resources\icons\icons8-crop-64.png" Width="22" Height="22"/>
 
             </Button>
+            <Button x:Name="resizeButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                    Click="resizeButton_Click" Margin="0">
+                <Image Source="Resources\icons\icons8-resize-64.png" Width="22" Height="22"/>
+            </Button>
 
 
             <materialDesign:ColorPicker Width="163"

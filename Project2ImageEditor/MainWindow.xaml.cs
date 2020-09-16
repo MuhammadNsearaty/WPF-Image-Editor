@@ -673,20 +673,24 @@ namespace Project2ImageEditor
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
                 if(itemId == 0)
                 {
-                    byte[] lllll = new byte[4];
-                    lllll[0] = 0; lllll[1] = 240; lllll[2] = 248; lllll[3] = 255;
-                    System.Drawing.Bitmap Bmp = new System.Drawing.Bitmap((int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
-                    using (System.Drawing.Graphics gfx = System.Drawing.Graphics.FromImage(Bmp))
-                    using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(240, 248, 255)))
-                    {
-                        gfx.FillRectangle(brush, 0, 0, (int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
-                    }
+
+                    //System.Drawing.Bitmap Bmp = new System.Drawing.Bitmap((int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
+                    //using (System.Drawing.Graphics gfx = System.Drawing.Graphics.FromImage(Bmp))
+                    //using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(240, 248, 255)))
+                    //{
+                    //    gfx.FillRectangle(brush, 0, 0, (int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
+                    //}
+                    BitmapImage newImg = new BitmapImage();
+                    newImg.BeginInit();
+                    newImg.UriSource = new Uri(@"C:\Users\NSEARATY\Desktop\bigPng.png");
+                    newImg.DecodePixelWidth = (int)canvas1.ActualWidth;
+                    newImg.DecodePixelHeight = (int)canvas1.ActualHeight;
+                    newImg.EndInit();
 
                     ImageBrush ib = new ImageBrush();
-                    ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(Bmp);
+                    ib.ImageSource = newImg;
                     this.canvas1.Background = ib;
                 }
-
                 foreach(UIElement layerItem in uilist)
                 {
                     foreach(UIElement mainItem in ancestList)

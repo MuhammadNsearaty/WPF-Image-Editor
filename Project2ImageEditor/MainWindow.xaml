@@ -15,21 +15,14 @@
     <Grid>
 
         <Canvas x:Name="canvas1"
+                Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelHeight}"
+                Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelWidth}"
                 SnapsToDevicePixels="True"
                 RenderTransformOrigin=".5,.5"
                 Margin="261,10,9.6,188.8"
                 MouseDown="Canvas_MouseDown"
                 MouseMove="Canvas_MouseMove"
                 MouseLeftButtonUp="canvas1_MouseLeftButtonUp">
-            <Canvas.Background>
-                <SolidColorBrush x:Name="brush"
-                                 Opacity="0" />
-            </Canvas.Background>
-            <Image Name="ImageViewer1"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Top"
-                   Height="522"
-                   Width="723" />
         </Canvas>
         <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Background="Transparent"

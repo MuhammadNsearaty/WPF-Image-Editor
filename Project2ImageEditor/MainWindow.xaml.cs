@@ -507,12 +507,12 @@ namespace Project2ImageEditor
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(path);
                 bitmap.EndInit();
-                ImageViewer1.Source = bitmap;
             }
             Canvas newCanvas = new Canvas();
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = bitmap;
             newCanvas.Background = ib;
+            canvas1.Background = ib;
             this.layersList.Add(new Layer(newCanvas,"Layer 0",true,0));
             this.layersListView.ItemsSource = null;
             this.layersListView.ItemsSource = layersList;
@@ -522,60 +522,60 @@ namespace Project2ImageEditor
         private void Comic_Click(object sender, RoutedEventArgs e)
 
         {
-            ImageHelpers.applyFillter("Comic", path, ImageViewer1);
+            ImageHelpers.applyFillter("Comic", path, canvas1);
         }
     
         private void BlackWhiteButton_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("BlackWhite", path, ImageViewer1);
+            ImageHelpers.applyFillter("BlackWhite", path, canvas1);
 
         }
 
         private void Gotham_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Gotham", path, ImageViewer1);
+            ImageHelpers.applyFillter("Gotham", path, canvas1);
 
         }
 
         private void GreyScale_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("GreyScale", path, ImageViewer1);
+            ImageHelpers.applyFillter("GreyScale", path, canvas1);
 
         }
 
         private void HiSatch_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("HiSatch", path, ImageViewer1);
+            ImageHelpers.applyFillter("HiSatch", path, canvas1);
 
         }
 
         private void Invert_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Invert", path, ImageViewer1);
+            ImageHelpers.applyFillter("Invert", path, canvas1);
 
         }
 
         private void Lomograph_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Lomograph", path, ImageViewer1);
+            ImageHelpers.applyFillter("Lomograph", path, canvas1);
 
         }
 
         private void LoSatch_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("LoSatch", path, ImageViewer1);
+            ImageHelpers.applyFillter("LoSatch", path, canvas1);
 
         }
 
         private void Polaroid_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Polaroid", path, ImageViewer1);
+            ImageHelpers.applyFillter("Polaroid", path, canvas1);
 
         }
 
         private void Sepia_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Sepia", path, ImageViewer1);
+            ImageHelpers.applyFillter("Sepia", path, canvas1);
 
         }
 
@@ -624,6 +624,11 @@ namespace Project2ImageEditor
             int itemId = int.Parse(chk.Uid);
             if (flag)
             {
+                if (itemId == 0)
+                {
+                    ImageBrush ib =(ImageBrush) layersList[itemId].canvas.Background;
+                    canvas1.Background = ib;
+                }
                 var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
 
                 foreach (UIElement layerItem in uilist)
@@ -665,7 +670,12 @@ namespace Project2ImageEditor
             {
                 var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
-
+                if(itemId == 0)
+                {
+                    SolidColorBrush brush = new SolidColorBrush();
+                    brush.Color = Colors.AliceBlue;
+                    this.canvas1.Background = brush;
+                }
 
                 foreach(UIElement layerItem in uilist)
                 {
@@ -752,7 +762,7 @@ namespace Project2ImageEditor
                 Point begin = new Point((double)cropBox.GetValue(Canvas.LeftProperty), (double)cropBox.GetValue(Canvas.TopProperty));
                 double w = cropBox.Width;double h = cropBox.Height;
                 System.Drawing.Image newImage;
-                RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)ImageViewer1.Width,(int)ImageViewer1.Height));
+                RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)canvas1.ActualWidth,(int)canvas1.ActualHeight));
 
                 var bitmapEncoder = new PngBitmapEncoder();
                 bitmapEncoder.Frames.Add(BitmapFrame.Create(bmp));
@@ -772,7 +782,9 @@ namespace Project2ImageEditor
 
                 BitmapSource source = ImageHelpers.GetImageStream(tmp);
 
-                ImageViewer1.Source = source;
+                ImageBrush ib = new ImageBrush();
+                ib.ImageSource = source;
+                canvas1.Background = ib;
 
                 
             }
@@ -796,7 +808,7 @@ namespace Project2ImageEditor
             ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
 
             canvas1.Children.Clear();
-            ImageViewer1.Source = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+            canvas1.Background = ib;
             
             Canvas newCanvas = new Canvas();
             newCanvas.Background = ib;

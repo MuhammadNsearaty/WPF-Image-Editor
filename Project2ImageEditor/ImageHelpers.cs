@@ -146,7 +146,7 @@ namespace Project2ImageEditor
             return (UIElement)System.Windows.Markup.XamlReader.Load(xmlReader);
 
         }
-        public static void applyFillter(string fillterType , string path , System.Windows.Controls.Image imageView)
+        public static void applyFillter(string fillterType , string path , Canvas canvas)
         {
 
             if (path.Equals(""))
@@ -204,7 +204,9 @@ namespace Project2ImageEditor
             System.Drawing.Image tmp = imageFactory.Image;
 
             BitmapSource source = ImageHelpers.GetImageStream(tmp);
-            imageView.Source = source;
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = source;
+            canvas.Background = ib;
 
         }
         public static BitmapSource GetImageStream(System.Drawing.Image myImage)

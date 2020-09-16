@@ -32,6 +32,7 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<Filter> ListOFFilters = new List<Filter>();
         Resize resizeWindow = new Resize();
         bool getout = false;
         Rectangle selectionBox = null;
@@ -56,7 +57,7 @@ namespace Project2ImageEditor
             InitializeComponent();
             this.DataContext = this;
         }
-        
+
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if(flag != "select")
@@ -672,9 +673,18 @@ namespace Project2ImageEditor
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
                 if(itemId == 0)
                 {
-                    SolidColorBrush brush = new SolidColorBrush();
-                    brush.Color = Colors.AliceBlue;
-                    this.canvas1.Background = brush;
+                    byte[] lllll = new byte[4];
+                    lllll[0] = 0; lllll[1] = 240; lllll[2] = 248; lllll[3] = 255;
+                    System.Drawing.Bitmap Bmp = new System.Drawing.Bitmap((int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
+                    using (System.Drawing.Graphics gfx = System.Drawing.Graphics.FromImage(Bmp))
+                    using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(240, 248, 255)))
+                    {
+                        gfx.FillRectangle(brush, 0, 0, (int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
+                    }
+
+                    ImageBrush ib = new ImageBrush();
+                    ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(Bmp);
+                    this.canvas1.Background = ib;
                 }
 
                 foreach(UIElement layerItem in uilist)
@@ -824,5 +834,14 @@ namespace Project2ImageEditor
             resizeWindow.Close();
         }
 
+        private void exitButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.window.Close();
+        }
+
+        private void BLur_Click(object sender, RoutedEventArgs e)
+        {
+            ImageHelpers.applyFillter("Blur", path, canvas1);
+        }
     }
 }

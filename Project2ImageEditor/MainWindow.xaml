@@ -6,289 +6,237 @@
         xmlns:local="clr-namespace:Project2ImageEditor"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+         TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="MainWindow"
-        Height="750"
-        Width="1000"
+        Height="700"
+        Width="1200"
+        VerticalAlignment="Bottom"
+        HorizontalAlignment="Center"
         Style="{StaticResource windowTemplate}"
+        Top="30"
+        Left="50"
         x:Name="window">
     <Grid>
-
-        <Canvas x:Name="canvas1"
+        <DockPanel Margin="0,0,-0.4,628.4">
+            <Menu DockPanel.Dock="Top" ItemsSource="{Binding ListOFFilters}" Height="40" Margin="0,0,-0.4,0">
+                <MenuItem Header="_File" >
+                    <MenuItem Header="Open" Height="30" Click="loadButton_Click"/>
+                    <MenuItem Header="Save" Height="30" Click="newSave"/>
+                    <MenuItem x:Name="exitButton" Header="Exit" Height="30" Click="exitButton_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="filterItem" Header="Filter">
+                    <MenuItem x:Name="BLur" Header="Blur" Click="BLur_Click"/>
+                    <MenuItem Header="Comic" Click="Comic_Click"/>
+                    <MenuItem Header="BlackWhite" Click="BlackWhiteButton_Click"/>
+                    <MenuItem Header="Gotham" Click="Gotham_Click"/>
+                    <MenuItem Header="Invert" Click="Invert_Click"/>
+                    <MenuItem Header="Sepia" Click="Sepia_Click"/>
+                    <MenuItem Header="Polaroid" Click="Polaroid_Click"/>
+                    <MenuItem Header="LoSatch" Click="LoSatch_Click"/>
+                    <MenuItem Header="HiSatch" Click="HiSatch_Click"/>
+                    <MenuItem Header="GreyScale" Click="GreyScale_Click"/>
+                    <MenuItem Header="Lomograph" Click="Lomograph_Click"/>
+                </MenuItem>
+                <MenuItem Header="Edit">
+                    <MenuItem Header="Pen" Click="penButton_Click"/>
+                    <MenuItem Header="Rectangle" Click="RectButton_Click"/>
+                    <MenuItem Header="Circle" Click="circleButton_Click"/>
+                    <MenuItem Header="Selection" Click="selectionButton_Click"/>
+                    <MenuItem Header="Crop" Click="cropButton_Click"/>
+                    <MenuItem Header="Resize" Click="resizeButton_Click"/>
+                    <MenuItem Header="Rotate Right" Click="rotateRight_Click"/>
+                    <MenuItem Header="Rotate Left" Click="rotateLeft_Click"/>
+                    <MenuItem Header="Clear" Click="ClearButton_Click"/>
+                </MenuItem>
+            </Menu>
+            <StackPanel></StackPanel>
+        </DockPanel>
+        <Border Margin="285,47,9.6,10" BorderBrush="AliceBlue" BorderThickness="3" Background="#FFDFD9D9">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.7"/>
+            </Border.Effect>
+            <Canvas x:Name="canvas1"
                 Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelHeight}"
                 Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelWidth}"
                 SnapsToDevicePixels="True"
                 RenderTransformOrigin=".5,.5"
-                Margin="261,10,9.6,188.8"
+                Margin="10,10,9.8,10"
                 MouseDown="Canvas_MouseDown"
                 MouseMove="Canvas_MouseMove"
                 MouseLeftButtonUp="canvas1_MouseLeftButtonUp">
-        </Canvas>
-        <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            </Canvas>
+        </Border>
+        <Border Margin="10,47,913.6,376.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+            </Border.Effect>
+            <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  Background="Transparent"
-                 Margin="10,10,765.6,0"
-                 Height="332"
+                 Margin="9.8,9.8,10.2,0"
+                 Height="222"
                  VerticalAlignment="Top">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="Padding"
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Padding"
                             Value="5,5,0,0" />
-                </Style>
-            </ListBox.ItemContainerStyle>
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
 
-            <Button x:Name="loadButton"
-                    Content="Load"
-                    Margin="0"
-                    FontSize="11"
-                    RenderTransformOrigin="-1.515,0.949"
-                    Height="auto"
-                    Click="loadButton_Click"
-                    Width="59" />
-            <Button x:Name="ClearButton"
+
+                <Button x:Name="ClearButton"
                     Content="Clear"
-                    FontSize="11"
                     Width="auto"
                     Height="auto"
+                        Margin="20,0,0,0"
                     Click="ClearButton_Click" />
-            <Button x:Name="SaveButton"
-                    Content="Save"
-                    FontSize="11"
-                    Width="auto"
-                    Height="auto"
-                    Click="newSave" />
-            <Button x:Name="addLayerButton"
+                <Button x:Name="addLayerButton"
+                        Margin="20,0,20,0"
                     Content="Add Layer"
                     Click="addLayerButton_Click"
                     Width="auto"
                     Height="auto" />
-            <Slider x:Name="slider"
-                    Width="66"
-                    Value="3" />
-            <Button x:Name="rotateRight"
+                
+                <Button x:Name="rotateRight"
                     Click="rotateRight_Click"
                     Style="{StaticResource InformButton}"
                     Width="31"
                     Margin="0"
                     Height="28">
-                <Image Source="Resources\icons\rotate-right.png" />
-            </Button>
-            <Button x:Name="rotateLeft"
+                    <Image Source="Resources\icons\rotate-right.png" />
+                </Button>
+                <Button x:Name="rotateLeft"
                     Click="rotateLeft_Click"
                     Style="{StaticResource InformButton}"
                     Width="31"
                     Margin="0"
                     Height="28">
-                <Image Source="Resources\icons\rotate-left.png" />
-            </Button>
-            <Button x:Name="penButton"
+                    <Image Source="Resources\icons\rotate-left.png" />
+                </Button>
+                <Button x:Name="penButton"
                     Click="penButton_Click"
                     Style="{StaticResource InformButton}"
                     Width="auto"
                     Margin="0">
-                <Image Source="Resources\icons\pen.png"
+                    <Image Source="Resources\icons\pen.png"
                        Height="22"
                        Width="22" />
-            </Button>
-            <Button x:Name="RectButton"
+                </Button>
+                <Button x:Name="RectButton"
                     Click="RectButton_Click"
                     Style="{StaticResource InformButton}"
                     Width="auto"
                     Height="auto"
                     Margin="0">
-                <Image Source="Resources\icons\rectangle.png"
+                    <Image Source="Resources\icons\rectangle.png"
                        Width="22"
                        Height="22" />
 
-            </Button>
-            <Button x:Name="circleButton"
+                </Button>
+                <Button x:Name="circleButton"
                     Width="auto"
                     Height="auto"
                     Style="{StaticResource InformButton}"
                     Click="circleButton_Click"
                     Margin="0">
-                <Image Source="Resources\icons\filled-circle.png"
+                    <Image Source="Resources\icons\filled-circle.png"
                        Height="22"
                        Width="22" />
-            </Button>
-            <Button x:Name="eraserButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                </Button>
+                <Button x:Name="eraserButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
                     Click="eraserButton_Click" Margin="0">
-                <Image Source="Resources\icons\icons8-eraser-64.png" Width="22" Height="22"/>
-            </Button>
+                    <Image Source="Resources\icons\icons8-eraser-64.png" Width="22" Height="22"/>
+                </Button>
 
-            <Button x:Name="selectButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
-                    Click="selectionButton_Click" Margin="0">
-                <Image Source="Resources\icons\icons8-select-64.png" Width="22" Height="22"/>
+                <Button x:Name="selectButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                    Click="selectionButton_Click" Margin="60,0,0,0">
+                    <Image Source="Resources\icons\icons8-select-64.png" Width="22" Height="22"/>
 
-            </Button>
-            <Button x:Name="cropButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                </Button>
+                <Button x:Name="cropButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
                     Click="cropButton_Click" Margin="0">
-                <Image Source="Resources\icons\icons8-crop-64.png" Width="22" Height="22"/>
+                    <Image Source="Resources\icons\icons8-crop-64.png" Width="22" Height="22"/>
 
-            </Button>
-            <Button x:Name="resizeButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
+                </Button>
+                <Button x:Name="resizeButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
                     Click="resizeButton_Click" Margin="0">
-                <Image Source="Resources\icons\icons8-resize-64.png" Width="22" Height="22"/>
-            </Button>
+                    <Image Source="Resources\icons\icons8-resize-64.png" Width="22" Height="22"/>
+                </Button>
 
 
-            <materialDesign:ColorPicker Width="163"
+                <Slider x:Name="slider"
+                    Width="66"
+                    Value="3"
+                        Margin="80,0,0,0"/>
+                <materialDesign:ColorPicker Width="163"
+                                        Color="AliceBlue"
                                         Height="69"
-                                        x:Name="clrPick">
+                                        x:Name="clrPick"
+                                            Margin="35,0,0,0"/>
+                
 
 
-            </materialDesign:ColorPicker>
-            <ScrollViewer HorizontalAlignment="Stretch"
-                          HorizontalScrollBarVisibility="Disabled"
-                          VerticalScrollBarVisibility="Auto"
-                          Grid.Row="1"
-                          Width="203"
-                          Height="140">
-                <Grid>
-                    <ListBoxItem x:Name="ListViewItemMenu"
-                                 Content="{Binding Path=Header}"
-                                 Padding="37 14"
-                                 FontSize="12"
-                                 HorizontalAlignment="Center"
-                                 Foreground="White" />
-                    <Expander x:Name="ExpanderMenu"
-                              Header="Fillters"
-                              IsExpanded="False"
-                              Width="200"
-                              HorizontalAlignment="Right"
-                              Background="{x:Null}"
-                              Foreground="White">
-                        <ListView x:Name="ListViewMenu"
-                                  Foreground="White"
-                                  HorizontalAlignment="Center"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListViewItem>
-                                <Button x:Name="BlackWhiteButton"
-                                        Click="BlackWhiteButton_Click"
-                                        Content="BlackWhite"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button x:Name="Comic"
-                                        Content="Comic"
-                                        Click="Comic_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="Gotham"
-                                        x:Name="Gotham"
-                                        Click="Gotham_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="GreyScale"
-                                        x:Name="GreyScale"
-                                        Click="GreyScale_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="HiSatch"
-                                        x:Name="HiSatch"
-                                        Click="HiSatch_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="Invert"
-                                        x:Name="Invert"
-                                        Click="Invert_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="Lomograph"
-                                        x:Name="Lomograph"
-                                        Click="Lomograph_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="LoSatch"
-                                        x:Name="LoSatch"
-                                        Click="LoSatch_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="Polaroid"
-                                        x:Name="Polaroid"
-                                        Click="Polaroid_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <Button Content="Sepia"
-                                        x:Name="Sepia"
-                                        Click="Sepia_Click"
-                                        Height="23"
-                                        Width="103" />
-                            </ListViewItem>
-                        </ListView>
-                    </Expander>
-                </Grid>
-            </ScrollViewer>
+            </ListBox>
+        </Border>
 
-        </ListBox>
-
-
-        <ListView x:Name="layersListView"
-                 HorizontalAlignment="Right"
-                 Height="364"
-                 Margin="0,347,765.6,0"
-                 VerticalAlignment="Top"
-                 Width="218"
+        <Border Margin="10,299,913.6,10.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
+            </Border.Effect>
+            <ListView x:Name="layersListView"
+                 Height="303"
+                 Margin="10,0,10,10.2"
+                 VerticalAlignment="Bottom"
                  Padding="0,0,0,0">
 
-            <ListView.View>
-                <GridView x:Name="my_dataGrid">
-                    <GridView.ColumnHeaderContainerStyle>
-                        <Style TargetType="{x:Type GridViewColumnHeader}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </Style>
-                    </GridView.ColumnHeaderContainerStyle>
-                    <GridViewColumn Header="image">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Canvas Height="80" Width="80" Uid="{Binding idx}" MouseDown="listView_Click">
-                                    <ContentPresenter Content="{Binding Path= canvas}"/>
-                                </Canvas>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="label">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Label Margin="2,0" Uid="{Binding idx}"  Content="{Binding Path=str}" MouseDown="listView_Click"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="checkBox">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox Margin="2,0" Uid="{Binding idx}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding Path=isChecked}"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                <ListView.View>
+                    <GridView x:Name="my_dataGrid">
+                        <GridView.ColumnHeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Style>
+                        </GridView.ColumnHeaderContainerStyle>
+                        <GridViewColumn Header="image">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Canvas Height="80" Width="80" Uid="{Binding idx}" MouseDown="listView_Click">
+                                        <ContentPresenter Content="{Binding Path= canvas}"/>
+                                    </Canvas>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="label">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Margin="2,0" Uid="{Binding idx}"  Content="{Binding Path=str}" MouseDown="listView_Click"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="checkBox">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox Margin="2,0" Uid="{Binding idx}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding Path=isChecked}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
-
+        </Border>
 
     </Grid>
 </Window>

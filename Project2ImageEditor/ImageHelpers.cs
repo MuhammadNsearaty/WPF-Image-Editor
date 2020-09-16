@@ -156,6 +156,9 @@ namespace Project2ImageEditor
 
             switch (fillterType)
             {
+                case "Blur":
+                    imageFactory.Load(newImage).GaussianBlur(10);
+                    break;
                 case "BlackWhite":
                     imageFactory.Load(newImage)
                    .Filter(MatrixFilters.BlackWhite);

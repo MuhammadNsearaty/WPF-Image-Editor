@@ -457,6 +457,14 @@ namespace Project2ImageEditor
                 jpg.Save(stm);
             }
         }
+        private void cropButton_Click(object sender, RoutedEventArgs e)
+        {
+            cropButton.IsEnabled = false;
+            RectButton.IsEnabled = true;
+            penButton.IsEnabled = true;
+            circleButton.IsEnabled = true;
+            this.flag = "crop";
+        }
 
         private void rotateRight_Click(object sender, RoutedEventArgs e)
         {
@@ -475,6 +483,7 @@ namespace Project2ImageEditor
         private void penButton_Click(object sender, RoutedEventArgs e)
         {
             penButton.IsEnabled = false;
+            cropButton.IsEnabled = true;
             circleButton.IsEnabled = true;
             RectButton.IsEnabled = true;
             this.flag = "pen";
@@ -483,6 +492,8 @@ namespace Project2ImageEditor
         private void RectButton_Click(object sender, RoutedEventArgs e)
         {
             RectButton.IsEnabled = false;
+
+            cropButton.IsEnabled = true; 
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
             this.flag = "rect";
@@ -491,6 +502,8 @@ namespace Project2ImageEditor
         private void circleButton_Click(object sender, RoutedEventArgs e)
         {
             circleButton.IsEnabled = false;
+
+            cropButton.IsEnabled = true; 
             penButton.IsEnabled = true;
             RectButton.IsEnabled = true;
             this.flag = "circle";
@@ -758,14 +771,7 @@ namespace Project2ImageEditor
             }
         }
 
-        private void cropButton_Click(object sender, RoutedEventArgs e)
-        {
-            cropButton.IsEnabled = false;
-            RectButton.IsEnabled = true;
-            penButton.IsEnabled = true;
-            circleButton.IsEnabled = true;
-            this.flag = "crop";
-        }
+        
 
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -805,6 +811,10 @@ namespace Project2ImageEditor
                 ImageBrush ib = new ImageBrush();
                 ib.ImageSource = source;
                 canvas1.Background = ib;
+
+                layersList[0].canvas.Background = ib;
+                this.layersListView.ItemsSource = null;
+                this.layersListView.ItemsSource = this.layersList;
 
                 
             }

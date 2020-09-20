@@ -692,8 +692,9 @@ namespace Project2ImageEditor
                 {
 
                     BitmapImage newImg = new BitmapImage();
-                    newImg.BeginInit();
-                    newImg.UriSource = new Uri(@"C:\Users\NSEARATY\Desktop\bigPng.png");
+                    newImg.BeginInit(); 
+                  
+                    newImg.UriSource = new Uri(@"Resources\images\bigPng.png", UriKind.Relative);
                     newImg.DecodePixelWidth = (int)canvas1.ActualWidth;
                     newImg.DecodePixelHeight = (int)canvas1.ActualHeight;
                     newImg.EndInit();

@@ -59,6 +59,30 @@ namespace Project2ImageEditor
         {
             InitializeComponent();
             this.DataContext = this;
+            User user = new User { Email = "adnankattan9@gmail.com", Password = "password" };
+            try
+            {
+                Console.WriteLine("---------------------------");
+                user.Login();
+                Console.WriteLine(user);
+                //Console.WriteLine(user);
+                List<FeedItem> feedItems = Comunicator.GetFeedItems(user).Data;
+                foreach (FeedItem item in feedItems)
+                {
+                    Console.WriteLine(item);
+                    //var stream = Comunicator.DownLoadOriginalImage(user, item);
+                    
+                    Console.WriteLine("------------------------------------------------");
+                }
+
+                //Console.WriteLine(user.AuthToken);
+                //DownLoadOriginalImage(user, feedItems[0]);
+                //DownLoadEnhancedImage(user, feedItems[0]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)

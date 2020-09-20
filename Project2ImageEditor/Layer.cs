@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace Project2ImageEditor
 {
+    [Serializable]
     class Layer
     {
         public Canvas canvas { get; set; }
@@ -20,6 +21,9 @@ namespace Project2ImageEditor
         public int idx {get;set;}
         public Layer()
         {
+            this.canvas = new Canvas();
+            this.canvas.Height = 80;
+            this.canvas.Width = 80;
         }
         public Layer(RenderTargetBitmap bmp, String str ,Boolean isChecked, int idx)
         {
@@ -36,6 +40,23 @@ namespace Project2ImageEditor
             this.str = str;
             this.isChecked = isChecked;
             this.idx = idx;
+        }
+
+        public Layer deepCopy()
+        {
+            Layer res = new Layer();
+            res.str = this.str;
+            res.idx = this.idx;
+            res.isChecked = this.isChecked;
+            var uilist = this.canvas.Children.Cast<System.Windows.UIElement>().ToList();
+
+            foreach(System.Windows.UIElement item in uilist)
+            {
+                res.canvas.Children.Add(ImageHelpers.CloneXaml(item));
+            }
+
+            res.canvas.Background = this.canvas.Background;
+            return res;
         }
 
        

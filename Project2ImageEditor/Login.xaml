@@ -1,0 +1,23 @@
+﻿<Window x:Class="Project2ImageEditor.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project2ImageEditor"
+        mc:Ignorable="d"
+        Title="Login" Height="450" Width="650">
+    <Grid>
+        <StackPanel Orientation="Vertical" Margin="0,0,-0.4,0">
+            <StackPanel Orientation="Horizontal" Margin="0,0,-0.4,0" Height="199">
+                <Button x:Name="signupButton" Content="Sign Up" Margin="20,8,0,159.2"/>
+                <Image x:Name="profileImage" Margin="130,36,0,10.2" Width="156" Source="Resources\icons\profile-icon-22.png"/>
+            </StackPanel>
+            <Label Content="Email" Margin="231,0,368.2,0"/>
+            <TextBox x:Name="emailBox" Height="25" TextWrapping="Wrap"  Margin="231,0,257.2,0"/>
+            <Label Content="Password"  Margin="231,10,353.2,0"/>
+            <TextBox x:Name="passwordBox" Height="25" TextWrapping="Wrap"  Margin="231,0,257.2,0"/>
+            <Button x:Name="loginButton" Content="Login" Margin="267,40,292.2,0"/>
+
+        </StackPanel>
+    </Grid>
+</Window>

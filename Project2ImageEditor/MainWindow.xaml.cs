@@ -32,6 +32,9 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        Login loginPage; 
+        Signup signupPage; 
+        bool signedIn = false;
         List<Filter> ListOFFilters = new List<Filter>();
         Resize resizeWindow = new Resize();
         bool getout = false;
@@ -623,6 +626,7 @@ namespace Project2ImageEditor
         {
             bool flag = chk.IsChecked.Value;
             int itemId = int.Parse(chk.Uid);
+            this.layersList[itemId].isChecked = flag;
             if (flag)
             {
                 if (itemId == 0)
@@ -674,12 +678,6 @@ namespace Project2ImageEditor
                 if(itemId == 0)
                 {
 
-                    //System.Drawing.Bitmap Bmp = new System.Drawing.Bitmap((int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
-                    //using (System.Drawing.Graphics gfx = System.Drawing.Graphics.FromImage(Bmp))
-                    //using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(240, 248, 255)))
-                    //{
-                    //    gfx.FillRectangle(brush, 0, 0, (int)canvas1.ActualWidth, (int)canvas1.ActualHeight);
-                    //}
                     BitmapImage newImg = new BitmapImage();
                     newImg.BeginInit();
                     newImg.UriSource = new Uri(@"C:\Users\NSEARATY\Desktop\bigPng.png");
@@ -776,6 +774,14 @@ namespace Project2ImageEditor
                 Point begin = new Point((double)cropBox.GetValue(Canvas.LeftProperty), (double)cropBox.GetValue(Canvas.TopProperty));
                 double w = cropBox.Width;double h = cropBox.Height;
                 System.Drawing.Image newImage;
+                for(int i = 0;i < canvas1.Children.Count; i++)
+                {
+                    if(canvas1.Children[i].Uid == "1")
+                    {
+                        canvas1.Children.Remove(canvas1.Children[i]);
+                        break;
+                    }
+                }
                 RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)canvas1.ActualWidth,(int)canvas1.ActualHeight));
 
                 var bitmapEncoder = new PngBitmapEncoder();
@@ -806,6 +812,7 @@ namespace Project2ImageEditor
 
         private void resizeButton_Click(object sender, RoutedEventArgs e)
         {
+            resizeWindow = new Resize();
             resizeWindow.Show();
             resizeWindow.submitButton.Click += new RoutedEventHandler(submitButton_Click);
         }
@@ -846,6 +853,174 @@ namespace Project2ImageEditor
         private void BLur_Click(object sender, RoutedEventArgs e)
         {
             ImageHelpers.applyFillter("Blur", path, canvas1);
+        }
+
+        private void MergeLayersButton_Click(object sender, RoutedEventArgs e)
+        {
+            bool first = true;
+            int resIdx = -1;
+            Layer res = new Layer();
+            List<int> removedIdx = new List<int>();
+           
+            foreach (Layer layer in this.layersList)
+            {
+
+                if (layer.isChecked)
+                {
+
+                    if (first)
+                    {
+                        resIdx = layer.idx;
+                        first = false;
+                        res = layer.deepCopy();
+                        if (layer.idx == 0)
+                        {
+                            ImageBrush ib = new ImageBrush();
+                            ib.ImageSource = bitmap;
+                            res.canvas.Background = ib;
+                        }
+                        else
+                        {
+                            BitmapImage bitmap2 = new BitmapImage();
+
+                            var stream = File.OpenRead(@"C:\Users\NSEARATY\Desktop\png.png");
+                            bitmap2.BeginInit();
+                            bitmap2.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap2.StreamSource = stream;
+                            bitmap2.EndInit();
+                            stream.Close();
+                            stream.Dispose();
+
+                            ImageBrush ib = new ImageBrush();
+                            ib.ImageSource = bitmap2;
+                            res.canvas.Background = ib;
+                        }
+                    }
+                    else if(!first)
+                    {
+                        var uilist = layersList[layer.idx].canvas.Children.Cast<UIElement>().ToList();
+                        foreach (UIElement item in uilist)
+                        {
+                            string itemXaml = XamlWriter.Save(item);
+                            StringReader stringReader = new StringReader(itemXaml);
+                            XmlReader xmlReader = XmlReader.Create(stringReader);
+                            UIElement newItem = (UIElement)XamlReader.Load(xmlReader);
+
+
+
+                            res.canvas.Children.Add(newItem);
+                        }
+                        removedIdx.Add(layer.idx);
+                    }
+
+                }
+            }
+            for(int i = removedIdx.Count-1 ; i >= 0; i--)
+            {
+                this.layersList.RemoveAt(removedIdx[i]);
+            }
+            this.layersList[resIdx] = res;
+            this.layersListView.ItemsSource = null;
+            this.layersListView.ItemsSource = this.layersList;
+        }
+
+        private void DeleteLayerButton_Click(object sender, RoutedEventArgs e)
+        {
+            var uilist = layersList[this.currentIdx].canvas.Children.Cast<UIElement>().ToList();
+            var mainList = canvas1.Children.Cast<UIElement>().ToList();
+
+            List<string> removed = new List<string>();
+            foreach(UIElement item in uilist)
+            {
+                foreach(UIElement mainItem in mainList)
+                {
+                    if (item.Uid == mainItem.Uid)
+                        removed.Add(item.Uid);
+                }
+            }
+            for (int j = removed.Count - 1; j >= 0; j--) {
+                for (int i = 0; i < canvas1.Children.Count; i++)
+                {
+                    if (canvas1.Children[i].Uid == removed[j])
+                    {
+                        canvas1.Children.Remove(canvas1.Children[i]);
+                        break;
+                    }
+            } }
+            this.layersList.RemoveAt(currentIdx);
+            this.layersListView.ItemsSource = null;
+            this.layersListView.ItemsSource = layersList;
+        }
+
+        private void canvas1_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            double ScaleRate = 1.1;
+            if (e.Delta > 0)
+            {
+                this.scaleTr.ScaleX *= ScaleRate;
+                this.scaleTr.ScaleY *= ScaleRate;
+            }
+            else
+            {
+                this.scaleTr.ScaleX /= ScaleRate;
+                this.scaleTr.ScaleY /= ScaleRate;
+            }
+        }
+
+        private void profileButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (signedIn)
+            {
+                //show profile
+                UserProfile userProfile = new UserProfile();
+
+            }
+            else
+            {
+                //sign in up
+                loginPage = new Login();
+                signupPage = new Signup();
+                loginPage.loginButton.Click += new RoutedEventHandler(loginButton_Click);
+                loginPage.signupButton.Click += new RoutedEventHandler(moveSignupButton_Click);
+                loginPage.Show();
+                
+            }
+        }
+        private void loginButton_Click(object sender, RoutedEventArgs e)
+        {
+            string email = loginPage.emailBox.Text;
+            string password = loginPage.passwordBox.Text;
+            // send login request
+        }
+        private void moveSignupButton_Click(object sender, RoutedEventArgs e)
+        {
+            loginPage.Close();
+            signupPage.Show();
+
+            signupPage.signUpButton.Click += new RoutedEventHandler(signupButton_Click);
+        }
+        private void signupButton_Click(object sender, RoutedEventArgs e)
+        {
+            string email = signupPage.emailBox.Text;
+            string name = signupPage.nameBox.Text;
+            string password = signupPage.passwordBox.Text;
+            string cnfPassword = signupPage.cnfPasswordBox.Text;
+
+            if (!password.Equals(cnfPassword))
+            {
+                this.signupPage.clearPassWord();
+                MessageBox.Show("Password not matched");
+            }
+            else
+            {
+                // send signUp request to server
+            }
+            
+        }
+
+        private void cutButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

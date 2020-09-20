@@ -23,9 +23,10 @@
         Top="30"
         Left="50"
         x:Name="window">
+
     <Grid>
-        <DockPanel Margin="0,0,-0.4,628.4">
-            <Menu DockPanel.Dock="Top" ItemsSource="{Binding ListOFFilters}" Height="40" Margin="0,0,-0.4,0">
+        <DockPanel Margin="0,0,-0.4,624.4">
+            <Menu DockPanel.Dock="Top" ItemsSource="{Binding ListOFFilters}" Height="48" Margin="0,0,-0.4,0">
                 <MenuItem Header="_File" >
                     <MenuItem Header="Open" Height="30" Click="loadButton_Click"/>
                     <MenuItem Header="Save" Height="30" Click="newSave"/>
@@ -55,25 +56,44 @@
                     <MenuItem Header="Rotate Left" Click="rotateLeft_Click"/>
                     <MenuItem Header="Clear" Click="ClearButton_Click"/>
                 </MenuItem>
+
+                <MenuItem x:Name="profileButton" Margin="925,0,0,0" Click="profileButton_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources\icons\profile-icon-22.png" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="2" ScaleY="1.7"/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </MenuItem.Icon>
+                </MenuItem>
             </Menu>
             <StackPanel></StackPanel>
         </DockPanel>
-        <Border Margin="285,47,9.6,10" BorderBrush="AliceBlue" BorderThickness="3" Background="#FFDFD9D9">
+        <Border BorderBrush="AliceBlue" BorderThickness="3" Background="#FFDFD9D9" Margin="285,51,9.6,6.4">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="10" Opacity="0.7"/>
             </Border.Effect>
-            <Canvas x:Name="canvas1"
+            <ScrollViewer Margin="6.8,6.8,6.6,6.6" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+
+                <Canvas x:Name="canvas1"
+                        MouseWheel="canvas1_MouseWheel"
                 Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelHeight}"
                 Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Background.ImageSource.PixelWidth}"
                 SnapsToDevicePixels="True"
                 RenderTransformOrigin=".5,.5"
-                Margin="10,10,9.8,10"
                 MouseDown="Canvas_MouseDown"
                 MouseMove="Canvas_MouseMove"
                 MouseLeftButtonUp="canvas1_MouseLeftButtonUp">
-            </Canvas>
+                    <Canvas.RenderTransform>
+                        <ScaleTransform x:Name="scaleTr"/>
+                    </Canvas.RenderTransform>
+                </Canvas>
+
+            </ScrollViewer>
         </Border>
-        <Border Margin="10,47,913.6,376.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
+        <Border Margin="10,51,913.6,372.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
             </Border.Effect>
@@ -98,20 +118,23 @@
 
 
                 <Button x:Name="ClearButton"
-                    Content="Clear"
+                    ToolTip="Clear"
+                        Content="Clear"
                     Width="auto"
                     Height="auto"
                         Margin="20,0,0,0"
                     Click="ClearButton_Click" />
                 <Button x:Name="addLayerButton"
+                        ToolTip="Add Layer"
                         Margin="20,0,20,0"
                     Content="Add Layer"
                     Click="addLayerButton_Click"
                     Width="auto"
                     Height="auto" />
-                
+
                 <Button x:Name="rotateRight"
                     Click="rotateRight_Click"
+                        ToolTip="Rotate Right"
                     Style="{StaticResource InformButton}"
                     Width="31"
                     Margin="0"
@@ -119,6 +142,7 @@
                     <Image Source="Resources\icons\rotate-right.png" />
                 </Button>
                 <Button x:Name="rotateLeft"
+                        ToolTip="Rotate Left"
                     Click="rotateLeft_Click"
                     Style="{StaticResource InformButton}"
                     Width="31"
@@ -127,6 +151,7 @@
                     <Image Source="Resources\icons\rotate-left.png" />
                 </Button>
                 <Button x:Name="penButton"
+                    ToolTip="Pen"
                     Click="penButton_Click"
                     Style="{StaticResource InformButton}"
                     Width="auto"
@@ -136,6 +161,7 @@
                        Width="22" />
                 </Button>
                 <Button x:Name="RectButton"
+                        ToolTip="Recangle"
                     Click="RectButton_Click"
                     Style="{StaticResource InformButton}"
                     Width="auto"
@@ -149,6 +175,7 @@
                 <Button x:Name="circleButton"
                     Width="auto"
                     Height="auto"
+                        ToolTip="Ellipse"
                     Style="{StaticResource InformButton}"
                     Click="circleButton_Click"
                     Margin="0">
@@ -157,85 +184,104 @@
                        Width="22" />
                 </Button>
                 <Button x:Name="eraserButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
-                    Click="eraserButton_Click" Margin="0">
+                    Click="eraserButton_Click" Margin="0" ToolTip="Eraser">
                     <Image Source="Resources\icons\icons8-eraser-64.png" Width="22" Height="22"/>
                 </Button>
 
                 <Button x:Name="selectButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
-                    Click="selectionButton_Click" Margin="60,0,0,0">
+                    Click="selectionButton_Click" Margin="60,0,0,0" ToolTip="Selection">
                     <Image Source="Resources\icons\icons8-select-64.png" Width="22" Height="22"/>
 
                 </Button>
                 <Button x:Name="cropButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
-                    Click="cropButton_Click" Margin="0">
+                    Click="cropButton_Click" Margin="0" ToolTip="Crop">
                     <Image Source="Resources\icons\icons8-crop-64.png" Width="22" Height="22"/>
 
                 </Button>
                 <Button x:Name="resizeButton" Width="auto" Height="auto" Style="{StaticResource InformButton}"
-                    Click="resizeButton_Click" Margin="0">
+                    Click="resizeButton_Click" Margin="0" ToolTip="Resize">
                     <Image Source="Resources\icons\icons8-resize-64.png" Width="22" Height="22"/>
+                </Button>
+                <Button x:Name="cutButton" Style="{StaticResource InformButton}"
+                        Click="cutButton_Click" Margin="0,0,0,0" ToolTip="Cut">
+                    <Image Source="Resources\icons\icons8-cut-64.png" Width="22" Height="22"/>
                 </Button>
 
 
                 <Slider x:Name="slider"
                     Width="66"
                     Value="3"
-                        Margin="80,0,0,0"/>
+                        Margin="80,0,0,0" ToolTip="Thickness"/>
                 <materialDesign:ColorPicker Width="163"
+                                            ToolTip="Color select"
                                         Color="AliceBlue"
                                         Height="69"
                                         x:Name="clrPick"
                                             Margin="35,0,0,0"/>
-                
+
 
 
             </ListBox>
         </Border>
 
-        <Border Margin="10,299,913.6,10.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
+        <Border Margin="10,307,913.6,6.4" Background="#FFDFD9D9" BorderBrush="AliceBlue" BorderThickness="3">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="5" Opacity="0.4"/>
             </Border.Effect>
-            <ListView x:Name="layersListView"
-                 Height="303"
-                 Margin="10,0,10,10.2"
+
+            <StackPanel Orientation="Vertical">
+                <ListView x:Name="layersListView"
+                 Height="297"
+                 Margin="10,0,10,10"
                  VerticalAlignment="Bottom"
                  Padding="0,0,0,0">
 
-                <ListView.View>
-                    <GridView x:Name="my_dataGrid">
-                        <GridView.ColumnHeaderContainerStyle>
-                            <Style TargetType="{x:Type GridViewColumnHeader}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </Style>
-                        </GridView.ColumnHeaderContainerStyle>
-                        <GridViewColumn Header="image">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Canvas Height="80" Width="80" Uid="{Binding idx}" MouseDown="listView_Click">
-                                        <ContentPresenter Content="{Binding Path= canvas}"/>
-                                    </Canvas>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="label">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Label Margin="2,0" Uid="{Binding idx}"  Content="{Binding Path=str}" MouseDown="listView_Click"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="checkBox">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox Margin="2,0" Uid="{Binding idx}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding Path=isChecked}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                    <ListView.View>
+                        <GridView x:Name="my_dataGrid">
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="{x:Type GridViewColumnHeader}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+                            <GridViewColumn Header="image">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Canvas Height="80" Width="80" Uid="{Binding idx}" MouseDown="listView_Click">
+                                            <ContentPresenter Content="{Binding Path= canvas}"/>
+                                        </Canvas>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="label">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Margin="2,0" Uid="{Binding idx}"  Content="{Binding Path=str}" MouseDown="listView_Click"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="checkBox">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Margin="2,0" Uid="{Binding idx}" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" IsChecked="{Binding Path=isChecked}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
 
+                </ListView>
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="MergeLayersButton"
+                        Content="Merge Layers"
+                        Margin="15,0,5,0"
+                        Click="MergeLayersButton_Click"/>
+
+                    <Button x:Name="DeleteLayerButton" 
+                            Margin="10,0,5,0"
+                            Content="Delte Layer" Click="DeleteLayerButton_Click">
+                    </Button>
+                </StackPanel>
+            </StackPanel>
         </Border>
 
     </Grid>

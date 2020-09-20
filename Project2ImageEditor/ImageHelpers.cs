@@ -8,19 +8,29 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace Project2ImageEditor
 {
     public static class ImageHelpers
     {
+        public static T CloneXaml<T>(T source)
+        {
+            string xaml = XamlWriter.Save(source);
+            StringReader sr = new StringReader(xaml);
+            XmlReader xr = XmlReader.Create(sr);
+            return (T)XamlReader.Load(xr);
+        }
 
         public static BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
         {

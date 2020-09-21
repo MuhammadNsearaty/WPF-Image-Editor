@@ -33,12 +33,12 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
-                                        <Button x:Name="downloadOrginal"
-                                                Uid="{Binding Path=idx}"
-                                                Content="Download Orginal" Margin="0,0,0,20" FontSize="14"/>
-                                        <Button x:Name="downloadEnhanced"
-                                                Uid="{Binding Path=idx}"
-                                                Content="Download Enhanced" FontSize="14"/>
+                                        <Button>
+                                            <ContentPresenter Content="{Binding Path=orgBtn}" />
+                                        </Button>
+                                        <Button>
+                                            <ContentPresenter Content="{Binding Path=enhBtn}" />
+                                        </Button>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

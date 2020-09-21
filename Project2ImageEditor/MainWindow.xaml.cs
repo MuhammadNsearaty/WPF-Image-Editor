@@ -478,12 +478,19 @@ namespace Project2ImageEditor
         {
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width,(int)bitmap.Height));
 
-            
-            JpegBitmapEncoder jpg = new JpegBitmapEncoder();
-            jpg.Frames.Add(BitmapFrame.Create(bmpCopied));
-            using (Stream stm = File.Create("c:\\temp\\test.jpeg"))
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
+            if (saveDialog.ShowDialog() == true)
             {
-                jpg.Save(stm);
+                if (saveDialog.FileName == "")
+                    return;
+
+                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
+                jpg.Frames.Add(BitmapFrame.Create(bmpCopied));
+                using (Stream stm = File.Create(saveDialog.FileName))
+                {
+                    jpg.Save(stm);
+                }
             }
         }
         private void cropButton_Click(object sender, RoutedEventArgs e)
@@ -1078,11 +1085,23 @@ namespace Project2ImageEditor
                     stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
                     System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
                     BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
-                    images.Add(new myImages(tmp, item.originalImageURL,ind));
+                    Button orgBtn = new Button();
+                    Button enhbtn = new Button();
+                    orgBtn.Content = "Dowload Orginal";
+                    enhbtn.Content = "Download Enhanced";
+                    orgBtn.FontSize = 14;
+                    enhbtn.FontSize = 14;
+
+                    orgBtn.Click += new RoutedEventHandler(this.downloadOrginalButton_Click);
+                    enhbtn.Click += new RoutedEventHandler(this.downloadEnhancedButton_Click);
+                    orgBtn.Uid = ind+"";
+                    enhbtn.Uid = ind + "";
+                    images.Add(new myImages(tmp, item.originalImageURL,orgBtn,enhbtn));
                     ind++;
                    
                 }
                 profile.imagesListView.ItemsSource = images;
+                
                 profile.Show();                
                 
             }
@@ -1140,13 +1159,45 @@ namespace Project2ImageEditor
         private void downloadOrginalButton_Click(object sender, RoutedEventArgs e)
         {
             String id = (sender as UIElement).Uid;
-
             FileStream res = Comunicator.DownLoadOriginalImage(user, feedItems[int.Parse(id)]);
+
+            System.Drawing.Bitmap resBmp = new System.Drawing.Bitmap(res);
+            BitmapImage bitmapImage = ImageHelpers.Bitmap2BitmapImage(resBmp);
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
+            if (saveDialog.ShowDialog() == true)
+            {
+                if (saveDialog.FileName == "")
+                    return;
+                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
+                jpg.Frames.Add(BitmapFrame.Create(bitmapImage));
+                using (Stream stm = File.Create(saveDialog.FileName))
+                {
+                    jpg.Save(stm);
+                }
+            }
         }
         private void downloadEnhancedButton_Click(object sender, RoutedEventArgs e)
         {
             String id = (sender as UIElement).Uid;
             FileStream res = Comunicator.DownLoadEnhancedImage(user, feedItems[int.Parse(id)]);
+
+            System.Drawing.Bitmap resBmp = new System.Drawing.Bitmap(res);
+            BitmapImage bitmapImage = ImageHelpers.Bitmap2BitmapImage(resBmp);
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
+            if (saveDialog.ShowDialog() == true)
+            {
+                if (saveDialog.FileName == "")
+                    return;
+                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
+                jpg.Frames.Add(BitmapFrame.Create(bitmapImage));
+                using (Stream stm = File.Create(saveDialog.FileName))
+                {
+                    jpg.Save(stm);
+                }
+            }
+
         }
 
         private void cutButton_Click(object sender, RoutedEventArgs e)

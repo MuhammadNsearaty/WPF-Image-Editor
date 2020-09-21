@@ -1018,29 +1018,41 @@ namespace Project2ImageEditor
             if (signedIn)
             {
                 //show profile
-                profile.Show();
+                ObservableCollection<myImages> images = new ObservableCollection<myImages>();
                 try
                 {
                     feedItems = Comunicator.GetFeedItems(user).Data;
-                }catch(Exception e1) { //ok continue
                 }
+                catch (Exception e1)
+                { //ok continue
+                    MessageBox.Show("Failled to connect server");
+                }
+                int ind = 0;
                 foreach (FeedItem item in feedItems)
                 {
                     //show the feedItems on the listvIew profile
-                    //Console.WriteLine(item);
                     var stream = Comunicator.DownLoadOriginalImage(user, item);
                     byte[] buffer = new byte[stream.Length];
                     stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
-                    System.Drawing.Bitmap bmp;
-                    using (FileStream fs = stream)
-                    {
-                        fs.Write(buffer, 0, Convert.ToInt32(fs.Length));
-                        bmp = new System.Drawing.Bitmap((Stream)fs);
-                        bmp.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
-                    }
+                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
+                    BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
+                    Button orgBtn = new Button();
+                    Button enhbtn = new Button();
+                    orgBtn.Content = "Dowload Orginal";
+                    enhbtn.Content = "Download Enhanced";
+                    orgBtn.FontSize = 14;
+                    enhbtn.FontSize = 14;
 
-                    Console.WriteLine("------------------------------------------------");
+                    orgBtn.Click += new RoutedEventHandler(this.downloadOrginalButton_Click);
+                    enhbtn.Click += new RoutedEventHandler(this.downloadEnhancedButton_Click);
+                    orgBtn.Uid = ind + "";
+                    enhbtn.Uid = ind + "";
+                    images.Add(new myImages(tmp, item.originalImageURL, orgBtn, enhbtn));
+                    ind++;
+
                 }
+                profile.imagesListView.ItemsSource = images;
+                profile.Show();
 
 
             }
@@ -1060,14 +1072,12 @@ namespace Project2ImageEditor
         {
             string email = loginPage.emailBox.Text;
             string password = loginPage.passwordBox.Text;
-
-
             user = new User { Email = email, Password = password};
             ObservableCollection<myImages> images = new ObservableCollection<myImages>();
-        
             try
             {
                 user.Login();
+                this.signedIn = true;
                 loginPage.Close();
                 try
                 {
@@ -1101,7 +1111,6 @@ namespace Project2ImageEditor
                    
                 }
                 profile.imagesListView.ItemsSource = images;
-                
                 profile.Show();                
                 
             }

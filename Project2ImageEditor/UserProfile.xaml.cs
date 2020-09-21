@@ -23,5 +23,6 @@ namespace Project2ImageEditor
         {
             InitializeComponent();
         }
+       
     }
 }

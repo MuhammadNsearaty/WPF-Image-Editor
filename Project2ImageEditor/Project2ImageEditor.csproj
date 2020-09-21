@@ -118,6 +118,7 @@
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
+    <Compile Include="myImages.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Resize.xaml.cs">
       <DependentUpon>Resize.xaml</DependentUpon>

@@ -32,6 +32,7 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+
         User user;
         Login loginPage;
         List<FeedItem> feedItems;
@@ -642,7 +643,6 @@ namespace Project2ImageEditor
             stream.Close();
             stream.Dispose();
 
-
             ib.ImageSource = bitmap;
             newcanvas.Background = ib;
             
@@ -1056,6 +1056,8 @@ namespace Project2ImageEditor
 
 
             user = new User { Email = email, Password = password};
+            ObservableCollection<myImages> images = new ObservableCollection<myImages>();
+        
             try
             {
 
@@ -1078,9 +1080,18 @@ namespace Project2ImageEditor
                     stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
                     System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
                     BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
+                    images.Add(new myImages(tmp, item.originalImageURL));
                    
                 }
+                profile.imagesListView.ItemsSource = images;
+
+              
+
+               
                 profile.Show();
+
+                
+                
             }
             catch (Exception e1)
             {
@@ -1132,6 +1143,14 @@ namespace Project2ImageEditor
                 }
             }
             
+        }
+        private void downloadOrginalButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void downloadEnhancedButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void cutButton_Click(object sender, RoutedEventArgs e)

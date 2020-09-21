@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project2ImageEditor"
         mc:Ignorable="d"
+        
         Title="UserProfile" Height="450" Width="650">
     <Grid>
         <StackPanel>
@@ -17,13 +18,22 @@
                 
                 <ListView.View>
                     <GridView x:Name="imagesGrid">
-                        <GridViewColumn Header="MyImages" Width="475">
+                        <GridViewColumn x:Name="ImagesColumn" Header="MyImages"
+                                        Width="auto" >
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Width="80" Height="80"></Image>
-                                        <Button Content="Download Orginal"/>
-                                        <Button Content="Download Super Resolution"/>
+                                    <Image x:Name="image"
+                                           Width="100"
+                                           Height="100" Source="{Binding Path=bmp}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn x:Name="buttonsColumn">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical">
+                                        <Button x:Name="downloadOrginal" Content="Download Orginal" Margin="0,0,0,20" FontSize="14"/>
+                                        <Button x:Name="downloadEnhanced" Content="Download Enhanced" FontSize="14"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

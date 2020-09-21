@@ -1060,8 +1060,6 @@ namespace Project2ImageEditor
         
             try
             {
-
-                //feedItems = Comunicator.GetFeedItems(user).Data;
                 user.Login();
                 loginPage.Close();
                 try
@@ -1071,26 +1069,21 @@ namespace Project2ImageEditor
                 catch (Exception e1)
                 { //ok continue
                 }
+                int ind = 0;
                 foreach (FeedItem item in feedItems)
                 {
                     //show the feedItems on the listvIew profile
-                    //Console.WriteLine(item);
                     var stream = Comunicator.DownLoadOriginalImage(user, item);
                     byte[] buffer = new byte[stream.Length];
                     stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
                     System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
                     BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
-                    images.Add(new myImages(tmp, item.originalImageURL));
+                    images.Add(new myImages(tmp, item.originalImageURL,ind));
+                    ind++;
                    
                 }
                 profile.imagesListView.ItemsSource = images;
-
-              
-
-               
-                profile.Show();
-
-                
+                profile.Show();                
                 
             }
             catch (Exception e1)
@@ -1146,11 +1139,14 @@ namespace Project2ImageEditor
         }
         private void downloadOrginalButton_Click(object sender, RoutedEventArgs e)
         {
+            String id = (sender as UIElement).Uid;
 
+            FileStream res = Comunicator.DownLoadOriginalImage(user, feedItems[int.Parse(id)]);
         }
         private void downloadEnhancedButton_Click(object sender, RoutedEventArgs e)
         {
-
+            String id = (sender as UIElement).Uid;
+            FileStream res = Comunicator.DownLoadEnhancedImage(user, feedItems[int.Parse(id)]);
         }
 
         private void cutButton_Click(object sender, RoutedEventArgs e)

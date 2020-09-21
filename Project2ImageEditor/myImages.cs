@@ -12,10 +12,11 @@ namespace Project2ImageEditor
        public string orginalUrl { get; set; }
 
         public BitmapImage bmp { get; set; }
-
-        public myImages(BitmapImage bmp,string org)
+         public int idx { get; set; }
+        public myImages(BitmapImage bmp,string org,int idx)
         {
             this.bmp = bmp;
+            this.idx = idx;
             this.orginalUrl = org;
         }
     }

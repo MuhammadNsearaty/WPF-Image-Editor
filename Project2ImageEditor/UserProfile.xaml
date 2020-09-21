@@ -23,6 +23,7 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image x:Name="image"
+                                           Uid="{Binding Path=idx}"
                                            Width="100"
                                            Height="100" Source="{Binding Path=bmp}"/>
                                 </DataTemplate>
@@ -32,8 +33,12 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical">
-                                        <Button x:Name="downloadOrginal" Content="Download Orginal" Margin="0,0,0,20" FontSize="14"/>
-                                        <Button x:Name="downloadEnhanced" Content="Download Enhanced" FontSize="14"/>
+                                        <Button x:Name="downloadOrginal"
+                                                Uid="{Binding Path=idx}"
+                                                Content="Download Orginal" Margin="0,0,0,20" FontSize="14"/>
+                                        <Button x:Name="downloadEnhanced"
+                                                Uid="{Binding Path=idx}"
+                                                Content="Download Enhanced" FontSize="14"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>

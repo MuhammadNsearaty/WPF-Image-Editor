@@ -31,6 +31,20 @@ namespace Project2ImageEditor
             XmlReader xr = XmlReader.Create(sr);
             return (T)XamlReader.Load(xr);
         }
+        public static Bitmap bitmapFromBitmapImage(BitmapImage bitmapImage)
+        {
+            // BitmapImage bitmapImage = new BitmapImage(new Uri("../Images/test.png", UriKind.Relative));
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                return new Bitmap(bitmap);
+            }
+        }
 
         public static BitmapImage Bitmap2BitmapImage(System.Drawing.Bitmap bitmap)
         {
@@ -156,12 +170,9 @@ namespace Project2ImageEditor
             return (UIElement)System.Windows.Markup.XamlReader.Load(xmlReader);
 
         }
-        public static void applyFillter(string fillterType , string path , Canvas canvas)
+        public static void applyFillter(string fillterType , System.Drawing.Bitmap bmp,Canvas canvas)
         {
-
-            if (path.Equals(""))
-                return;
-            System.Drawing.Image newImage = System.Drawing.Image.FromFile(path);
+            System.Drawing.Image newImage = bmp;
             var imageFactory = new ImageFactory(false);
 
             switch (fillterType)
@@ -217,8 +228,9 @@ namespace Project2ImageEditor
             System.Drawing.Image tmp = imageFactory.Image;
 
             BitmapSource source = ImageHelpers.GetImageStream(tmp);
+            BitmapImage source1 = ImageHelpers.Bitmap2BitmapImage(new System.Drawing.Bitmap(tmp));
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = source;
+            ib.ImageSource = source1;
             canvas.Background = ib;
 
         }

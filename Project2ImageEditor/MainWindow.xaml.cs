@@ -576,60 +576,66 @@ namespace Project2ImageEditor
         private void Comic_Click(object sender, RoutedEventArgs e)
 
         {
-            ImageHelpers.applyFillter("Comic", path, canvas1);
+            ImageHelpers.applyFillter("Comic", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
         }
     
         private void BlackWhiteButton_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("BlackWhite", path, canvas1);
+            ImageHelpers.applyFillter("BlackWhite", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void Gotham_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Gotham", path, canvas1);
+            ImageHelpers.applyFillter("Gotham", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void GreyScale_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("GreyScale", path, canvas1);
+            ImageHelpers.applyFillter("GreyScale", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void HiSatch_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("HiSatch", path, canvas1);
+            ImageHelpers.applyFillter("HiSatch", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void Invert_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("Invert", path, canvas1);
+            ImageHelpers.applyFillter("Invert", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void Lomograph_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("Lomograph", path, canvas1);
+            ImageHelpers.applyFillter("Lomograph", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void LoSatch_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("LoSatch", path, canvas1);
+            ImageHelpers.applyFillter("LoSatch", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void Polaroid_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("Polaroid", path, canvas1);
+            ImageHelpers.applyFillter("Polaroid", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
         private void Sepia_Click(object sender, RoutedEventArgs e)
+
         {
-            ImageHelpers.applyFillter("Sepia", path, canvas1);
+            ImageHelpers.applyFillter("Sepia", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
 
         }
 
@@ -827,13 +833,7 @@ namespace Project2ImageEditor
                 }
                 RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)canvas1.ActualWidth,(int)canvas1.ActualHeight));
 
-                var bitmapEncoder = new PngBitmapEncoder();
-                bitmapEncoder.Frames.Add(BitmapFrame.Create(bmp));
-                using (var stream = new MemoryStream())
-                {
-                    bitmapEncoder.Save(stream);
-                    newImage = System.Drawing.Image.FromStream(stream);
-                }
+                newImage = ImageHelpers.BitmapImage2Bitmap(bmp);
 
                 var imageFactory = new ImageFactory(false);
 
@@ -962,7 +962,7 @@ namespace Project2ImageEditor
 
         private void BLur_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Blur", path, canvas1);
+            ImageHelpers.applyFillter("Blur", ImageHelpers.bitmapFromBitmapImage(bitmap),canvas1);
         }
 
         private void MergeLayersButton_Click(object sender, RoutedEventArgs e)

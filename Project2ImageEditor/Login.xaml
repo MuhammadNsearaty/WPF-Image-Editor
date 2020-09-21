@@ -14,7 +14,8 @@
             </StackPanel>
             <Label Content="Email" Margin="231,0,368.2,0"/>
             <TextBox x:Name="emailBox" Height="25" TextWrapping="Wrap"  Margin="231,0,257.2,0"/>
-            <Label Content="Password"  Margin="231,10,353.2,0"/>
+            <Label Content="Password"
+                   Margin="231,10,303.2,0" />
             <TextBox x:Name="passwordBox" Height="25" TextWrapping="Wrap"  Margin="231,0,257.2,0"/>
             <Button x:Name="loginButton" Content="Login" Margin="267,40,292.2,0"/>
 

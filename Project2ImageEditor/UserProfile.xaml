@@ -8,13 +8,15 @@
         Title="UserProfile" Height="450" Width="650">
     <Grid>
         <StackPanel>
-            <Label  Height="53" Margin="20,20,459.2,0">
-                <TextBlock Text="User Profile" FontSize="30" Height="43" Width="154" />
+            <Label  Height="53"
+                    Margin="20,20,430.2,0">
+                <TextBlock Text="User Profile" FontSize="30" Height="43"
+                           Width="183" />
             </Label>
             <ListView x:Name="imagesListView" Height="340" Margin="120,0,120,0">
                 
                 <ListView.View>
-                    <GridView x:Name="myImagesGrid">
+                    <GridView x:Name="imagesGrid">
                         <GridViewColumn Header="MyImages" Width="475">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>

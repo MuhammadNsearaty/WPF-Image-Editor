@@ -7,11 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using RestSharp.Extensions;
-using System.Threading.Tasks;
 using System.Linq;
-using System.Net;
-using System.Collections.Concurrent;
 
 namespace Project2ImageEditor{
     public static class Comunicator
@@ -309,39 +305,6 @@ namespace Project2ImageEditor{
 
             return new Bitmap(Image.FromFile(enhanced_path));
         }
-
-    }
-
-    class Program {
-
-        static void Main1(string[] args) {
-            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(System.Drawing.Image.FromFile(@"..\..\Eh8bK2lXYAAPwSx.png"));
-            {
-                User user = new User { Email = "adnankattan9@gmail.com", Password = "password" };
-                try {
-                    Console.WriteLine("---------------------------");
-                    user.Login();
-                    Console.WriteLine(user);
-                    //Console.WriteLine(user);
-                    List<FeedItem> feedItems = Comunicator.GetFeedItems(user).Data;
-                    foreach (FeedItem item in feedItems) {
-                        Console.WriteLine(item);
-                        Console.WriteLine("------------------------------------------------");
-                    }
-
-                    //Console.WriteLine(user.AuthToken);
-                    //DownLoadOriginalImage(user, feedItems[0]);
-                    //DownLoadEnhancedImage(user, feedItems[0]);
-                }
-                catch (Exception e) {
-                    Console.WriteLine(e.Message);
-                }
-            }
-
-            Console.ReadKey();
-        }
-
-        
 
     }
 }

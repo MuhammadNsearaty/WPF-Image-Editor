@@ -32,8 +32,11 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        Login loginPage; 
-        Signup signupPage; 
+        User user;
+        Login loginPage;
+        List<FeedItem> feedItems;
+        Signup signupPage;
+        UserProfile profile = new UserProfile();
         bool signedIn = false;
         List<Filter> ListOFFilters = new List<Filter>();
         Resize resizeWindow = new Resize();
@@ -59,30 +62,31 @@ namespace Project2ImageEditor
         {
             InitializeComponent();
             this.DataContext = this;
-            User user = new User { Email = "adnankattan9@gmail.com", Password = "password" };
-            try
-            {
-                Console.WriteLine("---------------------------");
-                user.Login();
-                Console.WriteLine(user);
-                //Console.WriteLine(user);
-                List<FeedItem> feedItems = Comunicator.GetFeedItems(user).Data;
-                foreach (FeedItem item in feedItems)
-                {
-                    Console.WriteLine(item);
-                    //var stream = Comunicator.DownLoadOriginalImage(user, item);
+            //User user = new User { Email = "adnankattan9@gmail.com", Password = "password" };
+            //try
+            //{
+            //    Console.WriteLine("---------------------------");
+            //    user.Login();
+               
+            //    Console.WriteLine(user);
+            //    //Console.WriteLine(user);
+            //    List<FeedItem> feedItems = Comunicator.GetFeedItems(user).Data;
+            //    foreach (FeedItem item in feedItems)
+            //    {
+            //        Console.WriteLine(item);
+            //        //var stream = Comunicator.DownLoadOriginalImage(user, item);
                     
-                    Console.WriteLine("------------------------------------------------");
-                }
+            //        Console.WriteLine("------------------------------------------------");
+            //    }
 
-                //Console.WriteLine(user.AuthToken);
-                //DownLoadOriginalImage(user, feedItems[0]);
-                //DownLoadEnhancedImage(user, feedItems[0]);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            //    //Console.WriteLine(user.AuthToken);
+            //    //DownLoadOriginalImage(user, feedItems[0]);
+            //    //DownLoadEnhancedImage(user, feedItems[0]);
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -1007,11 +1011,35 @@ namespace Project2ImageEditor
             if (signedIn)
             {
                 //show profile
-                UserProfile userProfile = new UserProfile();
+                profile.Show();
+                try
+                {
+                    feedItems = Comunicator.GetFeedItems(user).Data;
+                }catch(Exception e1) { //ok continue
+                }
+                foreach (FeedItem item in feedItems)
+                {
+                    //show the feedItems on the listvIew profile
+                    //Console.WriteLine(item);
+                    var stream = Comunicator.DownLoadOriginalImage(user, item);
+                    byte[] buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
+                    System.Drawing.Bitmap bmp;
+                    using (FileStream fs = stream)
+                    {
+                        fs.Write(buffer, 0, Convert.ToInt32(fs.Length));
+                        bmp = new System.Drawing.Bitmap((Stream)fs);
+                        bmp.Save(fs, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    }
+
+                    Console.WriteLine("------------------------------------------------");
+                }
+
 
             }
             else
             {
+                
                 //sign in up
                 loginPage = new Login();
                 signupPage = new Signup();
@@ -1025,6 +1053,44 @@ namespace Project2ImageEditor
         {
             string email = loginPage.emailBox.Text;
             string password = loginPage.passwordBox.Text;
+
+
+            user = new User { Email = email, Password = password};
+            try
+            {
+
+                //feedItems = Comunicator.GetFeedItems(user).Data;
+                user.Login();
+                loginPage.Close();
+                try
+                {
+                    feedItems = Comunicator.GetFeedItems(user).Data;
+                }
+                catch (Exception e1)
+                { //ok continue
+                }
+                foreach (FeedItem item in feedItems)
+                {
+                    //show the feedItems on the listvIew profile
+                    //Console.WriteLine(item);
+                    var stream = Comunicator.DownLoadOriginalImage(user, item);
+                    byte[] buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
+                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
+                    BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
+                   
+                }
+                profile.Show();
+            }
+            catch (Exception e1)
+            {
+                //failed to login
+                this.loginPage.passwordBox.Clear();
+                MessageBox.Show("Wrong email or password\ntry to signup");
+                Console.WriteLine(e1.Message);
+                user = null;
+            }
+            
             // send login request
         }
         private void moveSignupButton_Click(object sender, RoutedEventArgs e)
@@ -1048,7 +1114,22 @@ namespace Project2ImageEditor
             }
             else
             {
-                // send signUp request to server
+                try
+                {
+                    // send signUp request to server
+                    user = new User { Email = email, Name = name, Password = password };
+                    user.Signup();
+                    user.Login();
+                    this.signedIn = true;
+                    this.signupPage.Close();
+                }catch(Exception e1)
+                {
+                    this.signupPage.passwordBox.Clear();
+                    this.signupPage.cnfPasswordBox.Clear();
+                    //failled signup
+                    MessageBox.Show("Failled to Signup");
+                    user = null;
+                }
             }
             
         }

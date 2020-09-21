@@ -14,7 +14,6 @@ namespace Project2ImageEditor{
     {
         public static IRestResponse<AuthToken> SendLoginRequest(User user)
         {
-
             var request = new RestRequest("/api/login/", DataFormat.Json);
             request.AddParameter("username", user.Email);
             request.AddParameter("password", user.Password);
@@ -263,7 +262,7 @@ namespace Project2ImageEditor{
 
     public class ImageProcessor
     {
-        static void PerformSR(int scale, string input, string output)
+        public static void PerformSR(int scale, string input, string output)
         {
             var psi = new ProcessStartInfo
             {
@@ -291,7 +290,7 @@ namespace Project2ImageEditor{
             }
         }
 
-        static System.Drawing.Bitmap PerformSR(int scale, System.Drawing.Bitmap bmp)
+        public static System.Drawing.Bitmap PerformSR(int scale, System.Drawing.Bitmap bmp)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
             Directory.CreateDirectory(path);

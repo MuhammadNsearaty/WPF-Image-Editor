@@ -32,9 +32,10 @@ namespace Project2ImageEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        SRWindow srWindow;
         User user;
         Login loginPage;
+        chooseWindow choose;
         List<FeedItem> feedItems;
         Signup signupPage;
         UserProfile profile = new UserProfile();
@@ -858,9 +859,41 @@ namespace Project2ImageEditor
 
         private void resizeButton_Click(object sender, RoutedEventArgs e)
         {
+            choose = new chooseWindow();
+            ObservableCollection<chooseBtns> btnsList = new ObservableCollection<chooseBtns>();
+
+            Button interpolateBtn = new Button();
+            interpolateBtn.Content = "Interpolate";
+            interpolateBtn.Click += new RoutedEventHandler(interpolate_Click);
+           
+
+            Button SRBtn = new Button();
+            SRBtn.Content = "Super Resolution";
+            SRBtn.Click += new RoutedEventHandler(SR_Click);
+
+
+            btnsList.Add(new chooseBtns(interpolateBtn,SRBtn));
+
+            
+            choose.listView.ItemsSource = btnsList;
+
+            choose.Show();
+            
+        }
+        private void interpolate_Click(object sender,RoutedEventArgs e)
+        {
+            choose.Close();
             resizeWindow = new Resize();
             resizeWindow.Show();
             resizeWindow.submitButton.Click += new RoutedEventHandler(submitButton_Click);
+        }
+        private void SR_Click(object sender, RoutedEventArgs e)
+        {
+            srWindow = new SRWindow();
+
+            srWindow.submitSRButton.Click += new RoutedEventHandler(submitSR_Click);
+
+            srWindow.Show();
         }
         private void submitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -871,6 +904,7 @@ namespace Project2ImageEditor
 
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h) ;
+
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
 
@@ -891,6 +925,36 @@ namespace Project2ImageEditor
             resizeWindow.Close();
         }
 
+        private void submitSR_Click(Object sender , RoutedEventArgs e)
+        {
+            srWindow.Close();
+
+            var item = (ComboBoxItem)srWindow.cmbx.SelectedItem;
+           int scaler = int.Parse(item.Content.ToString());
+
+            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
+            System.Drawing.Bitmap bmp = ImageHelpers.BitmapImage2Bitmap(bmpCopied);
+
+
+            System.Drawing.Bitmap resBitmap = ImageProcessor.PerformSR(scaler, bmp);
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+
+            canvas1.Children.Clear();
+            canvas1.Background = ib;
+
+            Canvas newCanvas = new Canvas();
+            newCanvas.Background = ib;
+
+            this.layersList = new List<Layer>();
+            this.layersListView.ItemsSource = null;
+
+            this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
+            this.layersListView.ItemsSource = layersList;
+            this.currentIdx = 0;
+            this.idx++;
+
+        }
         private void exitButton_Click(object sender, RoutedEventArgs e)
         {
             this.window.Close();

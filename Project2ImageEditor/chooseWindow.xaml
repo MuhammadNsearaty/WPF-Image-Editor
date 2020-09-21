@@ -1,0 +1,39 @@
+﻿<Window x:Class="Project2ImageEditor.chooseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project2ImageEditor"
+        mc:Ignorable="d"
+        Height="162.781"
+        Title="Choose"
+        Width="286.079">
+    <ListView x:Name="listView">
+        <ListView.View>
+            <GridView x:Name="imagesGrid">
+                <GridView.ColumnHeaderContainerStyle>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                    </Style>
+                </GridView.ColumnHeaderContainerStyle>
+                <GridViewColumn x:Name="ImagesColumn"
+                                Width="auto">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate >
+                            <StackPanel Orientation="Vertical" >
+                                <Button>
+                                    <ContentPresenter Content="{Binding Path=btn1}"/>
+                                </Button>
+                                <Button>
+                                    <ContentPresenter Content="{Binding Path=btn2}" />
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </GridView>
+            </ListView.View>
+    </ListView>
+    
+</Window>

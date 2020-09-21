@@ -400,11 +400,25 @@ namespace ImageEditor
 
         public Bitmap ResizeBilinear(Bitmap img ,int width ,int high){
             ResizeBilinear filter = new ResizeBilinear(width,high);
-            return filter.Apply(img);
+            Bitmap clone = new Bitmap(img.Width, img.Height,
+                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            using (Graphics gr = Graphics.FromImage(clone))
+            {
+                gr.DrawImage(img, new Rectangle(0, 0, clone.Width, clone.Height));
+            }
+            return filter.Apply(clone);
         }
         public Bitmap ResizeNearestNeighbor(Bitmap img, int width , int high){
         ResizeNearestNeighbor filter = new ResizeNearestNeighbor( width, high );
-        return filter.Apply(img);
+            Bitmap clone = new Bitmap(img.Width, img.Height,
+                    System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            using (Graphics gr = Graphics.FromImage(clone))
+            {
+                gr.DrawImage(img, new Rectangle(0, 0, clone.Width, clone.Height));
+            }
+            return filter.Apply(clone);
         }
 
         }

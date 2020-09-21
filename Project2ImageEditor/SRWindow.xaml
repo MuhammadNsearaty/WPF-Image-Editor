@@ -1,0 +1,23 @@
+﻿<Window x:Class="Project2ImageEditor.SRWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Project2ImageEditor"
+        mc:Ignorable="d"
+        Title="SRWindow"
+        Height="147.564"
+        Width="357.077">
+    <StackPanel Orientation="Horizontal">
+        <Label Content="Scalling Factor"
+               Margin="10,43,0,42.6" />
+        <ComboBox x:Name="cmbx" Margin="10,45,0,44.6"
+                  Width="98" >
+            <ComboBoxItem Content="2" IsSelected="True"/>
+            <ComboBoxItem Content="3" />
+        </ComboBox>
+        <Button x:Name="submitSRButton" Content="Submit"
+                Margin="60,45,0,44.6"
+                Height="Auto" />
+    </StackPanel>
+</Window>

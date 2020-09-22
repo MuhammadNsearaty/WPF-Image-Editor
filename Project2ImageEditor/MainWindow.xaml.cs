@@ -49,7 +49,7 @@ namespace Project2ImageEditor
         int currentIdx = 0;
         int idx = 0;
         int nxtId = 2;
-        
+
         BitmapImage bitmap = new BitmapImage();
         Point currentPoint = new Point();
         private Rectangle rectangle;
@@ -69,7 +69,7 @@ namespace Project2ImageEditor
             //{
             //    Console.WriteLine("---------------------------");
             //    user.Login();
-               
+
             //    Console.WriteLine(user);
             //    //Console.WriteLine(user);
             //    List<FeedItem> feedItems = Comunicator.GetFeedItems(user).Data;
@@ -77,7 +77,7 @@ namespace Project2ImageEditor
             //    {
             //        Console.WriteLine(item);
             //        //var stream = Comunicator.DownLoadOriginalImage(user, item);
-                    
+
             //        Console.WriteLine("------------------------------------------------");
             //    }
 
@@ -93,7 +93,7 @@ namespace Project2ImageEditor
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(flag != "select")
+            if (flag != "select")
             {
                 if (selectionBox != null)
                 {
@@ -183,7 +183,7 @@ namespace Project2ImageEditor
                     }
                 case "select":
                     {
-                        
+
                         currentPoint = e.GetPosition(canvas1);
 
                         // Initialize the rectangle.
@@ -227,7 +227,7 @@ namespace Project2ImageEditor
                             StrokeThickness = slider.Value
                         };
                         cropBox.Stroke = br;
-                        
+
                         cropBox.StrokeDashArray = new DoubleCollection() { 2 };
                         cropBox.Uid = "" + 1;
                         Canvas.SetLeft(cropBox, currentPoint.X);
@@ -239,7 +239,7 @@ namespace Project2ImageEditor
                 case "none":
                     break;
             }
-            
+
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
@@ -263,10 +263,11 @@ namespace Project2ImageEditor
                             Console.WriteLine("fuck my life get out");
                             return;
                         }
-                       
+
                     }
                 }
-                switch (this.flag) {
+                switch (this.flag)
+                {
                     case "pen":
                         {
                             Line line = new Line();
@@ -392,53 +393,53 @@ namespace Project2ImageEditor
 
                         }
                     case "select":
-                        { 
-                        if (e.LeftButton == MouseButtonState.Released || selectionBox == null || selectionBox == null)
-                            return;
+                        {
+                            if (e.LeftButton == MouseButtonState.Released || selectionBox == null || selectionBox == null)
+                                return;
 
-                        var pos = e.GetPosition(canvas1);
+                            var pos = e.GetPosition(canvas1);
 
-                        // Set the position of rectangle
-                        var x = Math.Min(pos.X, currentPoint.X);
-                        var y = Math.Min(pos.Y, currentPoint.Y);
+                            // Set the position of rectangle
+                            var x = Math.Min(pos.X, currentPoint.X);
+                            var y = Math.Min(pos.Y, currentPoint.Y);
 
-                        // Set the dimenssion of the rectangle
-                        var w = Math.Max(pos.X, currentPoint.X) - x;
-                        var h = Math.Max(pos.Y, currentPoint.Y) - y;
+                            // Set the dimenssion of the rectangle
+                            var w = Math.Max(pos.X, currentPoint.X) - x;
+                            var h = Math.Max(pos.Y, currentPoint.Y) - y;
 
-                        selectionBox.Width = w;
-                        selectionBox.Height = h;
-
-
+                            selectionBox.Width = w;
+                            selectionBox.Height = h;
 
 
 
-                        Canvas.SetLeft(selectionBox, x);
-                        Canvas.SetTop(selectionBox, y);
+
+
+                            Canvas.SetLeft(selectionBox, x);
+                            Canvas.SetTop(selectionBox, y);
 
 
 
-                        double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
-                        double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
+                            double dimW = this.layersList[this.currentIdx].canvas.ActualWidth / canvas1.ActualWidth;
+                            double dimH = this.layersList[this.currentIdx].canvas.ActualHeight / canvas1.ActualHeight;
 
-                        Point point = new Point(currentPoint.X, currentPoint.Y);
-                        point.X *= dimW;
-                        point.Y *= dimH;
-                        // Set the position of rectangle
-                        var x1 = Math.Min(pos.X * dimW, point.X);
-                        var y1 = Math.Min(pos.Y * dimH, point.Y);
+                            Point point = new Point(currentPoint.X, currentPoint.Y);
+                            point.X *= dimW;
+                            point.Y *= dimH;
+                            // Set the position of rectangle
+                            var x1 = Math.Min(pos.X * dimW, point.X);
+                            var y1 = Math.Min(pos.Y * dimH, point.Y);
 
-                        // Set the dimenssion of the rectangle
-                        var w1 = Math.Max(pos.X * dimW, point.X) - x1;
-                        var h1 = Math.Max(pos.Y * dimH, point.Y) - y1;
+                            // Set the dimenssion of the rectangle
+                            var w1 = Math.Max(pos.X * dimW, point.X) - x1;
+                            var h1 = Math.Max(pos.Y * dimH, point.Y) - y1;
 
-                        newRect.Width = w1;
-                        newRect.Height = h1;
+                            newRect.Width = w1;
+                            newRect.Height = h1;
 
-                        Canvas.SetLeft(newRect, x1);
-                        Canvas.SetTop(newRect, y1);
-                        break;
-                }
+                            Canvas.SetLeft(newRect, x1);
+                            Canvas.SetTop(newRect, y1);
+                            break;
+                        }
                     case "crop":
                         {
 
@@ -465,7 +466,7 @@ namespace Project2ImageEditor
                     case "none":
                         break;
                 }
-               
+
             }
         }
 
@@ -477,22 +478,9 @@ namespace Project2ImageEditor
 
         private void newSave(object sender, RoutedEventArgs e)
         {
-            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width,(int)bitmap.Height));
+            RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
+            ImageHelpers.saveImage(bmpCopied);
 
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
-            if (saveDialog.ShowDialog() == true)
-            {
-                if (saveDialog.FileName == "")
-                    return;
-
-                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
-                jpg.Frames.Add(BitmapFrame.Create(bmpCopied));
-                using (Stream stm = File.Create(saveDialog.FileName))
-                {
-                    jpg.Save(stm);
-                }
-            }
         }
         private void cropButton_Click(object sender, RoutedEventArgs e)
         {
@@ -530,7 +518,7 @@ namespace Project2ImageEditor
         {
             RectButton.IsEnabled = false;
 
-            cropButton.IsEnabled = true; 
+            cropButton.IsEnabled = true;
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
             this.flag = "rect";
@@ -540,7 +528,7 @@ namespace Project2ImageEditor
         {
             circleButton.IsEnabled = false;
 
-            cropButton.IsEnabled = true; 
+            cropButton.IsEnabled = true;
             penButton.IsEnabled = true;
             RectButton.IsEnabled = true;
             this.flag = "circle";
@@ -549,7 +537,7 @@ namespace Project2ImageEditor
         private void loadButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            
+
             dlg.Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF;*.JPEG|" +
         "All files (*.*)|*.*";
             dlg.RestoreDirectory = true;
@@ -557,7 +545,7 @@ namespace Project2ImageEditor
             if (dlg.ShowDialog() == true)
             {
                 path = dlg.FileName;
-               // BitmapImage bitmap = new BitmapImage();
+                // BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(path);
                 bitmap.EndInit();
@@ -567,7 +555,7 @@ namespace Project2ImageEditor
             ib.ImageSource = bitmap;
             newCanvas.Background = ib;
             canvas1.Background = ib;
-            this.layersList.Add(new Layer(newCanvas,"Layer 0",true,0));
+            this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
             this.layersListView.ItemsSource = null;
             this.layersListView.ItemsSource = layersList;
             this.currentIdx = 0;
@@ -583,7 +571,7 @@ namespace Project2ImageEditor
         {
             ImageHelpers.applyFillter("Comic", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
         }
-    
+
         private void BlackWhiteButton_Click(object sender, RoutedEventArgs e)
         {
             ImageHelpers.applyFillter("BlackWhite", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
@@ -647,7 +635,7 @@ namespace Project2ImageEditor
         private void addLayerButton_Click(object sender, RoutedEventArgs e)
         {
             Canvas newcanvas = new Canvas();
-           
+
 
             newcanvas.Children.Clear();
             ImageBrush ib = new ImageBrush();
@@ -664,13 +652,13 @@ namespace Project2ImageEditor
 
             ib.ImageSource = bitmap;
             newcanvas.Background = ib;
-            
-            layersList.Add(new Layer(newcanvas,"Layer "+idx,true,idx++));
+
+            layersList.Add(new Layer(newcanvas, "Layer " + idx, true, idx++));
 
             layersListView.ItemsSource = null;
             layersListView.ItemsSource = layersList;
 
-            this.currentIdx = layersList.Count-1;
+            this.currentIdx = layersList.Count - 1;
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -691,7 +679,7 @@ namespace Project2ImageEditor
             {
                 if (itemId == 0)
                 {
-                    ImageBrush ib =(ImageBrush) layersList[itemId].canvas.Background;
+                    ImageBrush ib = (ImageBrush)layersList[itemId].canvas.Background;
                     canvas1.Background = ib;
                 }
                 var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
@@ -706,8 +694,8 @@ namespace Project2ImageEditor
                     XmlReader xmlReader = XmlReader.Create(stringReader);
                     UIElement newItem = (UIElement)XamlReader.Load(xmlReader);
 
-                    double dimW =  canvas1.ActualWidth/ layersList[itemId].canvas.ActualWidth;
-                    double dimH =  canvas1.ActualHeight/ layersList[itemId].canvas.ActualHeight;
+                    double dimW = canvas1.ActualWidth / layersList[itemId].canvas.ActualWidth;
+                    double dimH = canvas1.ActualHeight / layersList[itemId].canvas.ActualHeight;
 
                     Line line = newItem as Line;
                     if (line != null)
@@ -725,7 +713,7 @@ namespace Project2ImageEditor
                         Canvas.SetTop(newItem, top * dimH);
                         Canvas.SetLeft(newItem, left * dimW);
                     }
-                    
+
 
                     this.canvas1.Children.Add(newItem);
 
@@ -735,12 +723,12 @@ namespace Project2ImageEditor
             {
                 var uilist = layersList[itemId].canvas.Children.Cast<UIElement>().ToList();
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
-                if(itemId == 0)
+                if (itemId == 0)
                 {
 
                     BitmapImage newImg = new BitmapImage();
-                    newImg.BeginInit(); 
-                  
+                    newImg.BeginInit();
+
                     newImg.UriSource = new Uri(@"Resources\images\bigPng.png", UriKind.Relative);
                     newImg.DecodePixelWidth = (int)canvas1.ActualWidth;
                     newImg.DecodePixelHeight = (int)canvas1.ActualHeight;
@@ -750,11 +738,11 @@ namespace Project2ImageEditor
                     ib.ImageSource = newImg;
                     this.canvas1.Background = ib;
                 }
-                foreach(UIElement layerItem in uilist)
+                foreach (UIElement layerItem in uilist)
                 {
-                    foreach(UIElement mainItem in ancestList)
+                    foreach (UIElement mainItem in ancestList)
                     {
-                        
+
                         if (layerItem.Uid.Equals(mainItem.Uid))
                         {
                             this.canvas1.Children.Remove(mainItem);
@@ -765,9 +753,9 @@ namespace Project2ImageEditor
             }
         }
 
-        
 
-        private void listView_Click(object sender,MouseButtonEventArgs e)
+
+        private void listView_Click(object sender, MouseButtonEventArgs e)
         {
             String id = (sender as UIElement).Uid;
             this.currentIdx = int.Parse(id);
@@ -778,7 +766,7 @@ namespace Project2ImageEditor
 
         }
 
-        
+
 
         private void selectionButton_Click(object sender, RoutedEventArgs e)
         {
@@ -795,9 +783,9 @@ namespace Project2ImageEditor
 
                 var ancestList = canvas1.Children.Cast<UIElement>().ToList();
 
-                foreach(UIElement item in ancestList)
+                foreach (UIElement item in ancestList)
                 {
-                    if(item.Uid == "0")
+                    if (item.Uid == "0")
                     {
                         canvas1.Children.Remove(item);
                     }
@@ -819,31 +807,31 @@ namespace Project2ImageEditor
             }
         }
 
-        
+
 
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(flag == "crop")
+            if (flag == "crop")
             {
                 Point begin = new Point((double)cropBox.GetValue(Canvas.LeftProperty), (double)cropBox.GetValue(Canvas.TopProperty));
-                double w = cropBox.Width;double h = cropBox.Height;
+                double w = cropBox.Width; double h = cropBox.Height;
                 System.Drawing.Image newImage;
-                for(int i = 0;i < canvas1.Children.Count; i++)
+                for (int i = 0; i < canvas1.Children.Count; i++)
                 {
-                    if(canvas1.Children[i].Uid == "1")
+                    if (canvas1.Children[i].Uid == "1")
                     {
                         canvas1.Children.Remove(canvas1.Children[i]);
                         break;
                     }
                 }
-                RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1,new System.Windows.Size((int)canvas1.ActualWidth,(int)canvas1.ActualHeight));
+                RenderTargetBitmap bmp = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)canvas1.ActualWidth, (int)canvas1.ActualHeight));
 
                 newImage = ImageHelpers.BitmapImage2Bitmap(bmp);
 
                 var imageFactory = new ImageFactory(false);
 
 
-                imageFactory.Load(newImage).Crop(new System.Drawing.Rectangle((int)begin.X,(int) begin.Y, (int)w, (int)h));
+                imageFactory.Load(newImage).Crop(new System.Drawing.Rectangle((int)begin.X, (int)begin.Y, (int)w, (int)h));
 
 
                 System.Drawing.Image tmp = imageFactory.Image;
@@ -858,18 +846,18 @@ namespace Project2ImageEditor
                 this.layersListView.ItemsSource = null;
                 this.layersListView.ItemsSource = this.layersList;
 
-                
+
             }
         }
 
         private void resizeButton_Click(object sender, RoutedEventArgs e)
         {
-            choose = new chooseWindow();          
-            choose.interpolateBtn.Click += new RoutedEventHandler(interpolate_Click);           
+            choose = new chooseWindow();
+            choose.interpolateBtn.Click += new RoutedEventHandler(interpolate_Click);
             choose.SRBtn.Click += new RoutedEventHandler(SR_Click);
             choose.Show();
         }
-        private void interpolate_Click(object sender,RoutedEventArgs e)
+        private void interpolate_Click(object sender, RoutedEventArgs e)
         {
             choose.Close();
             resizeWindow = new Resize();
@@ -893,7 +881,7 @@ namespace Project2ImageEditor
             resizeWindow.type = item.Content.ToString();
 
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
-            System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h) ;
+            System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h);
 
             this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
             ImageBrush ib = new ImageBrush();
@@ -901,7 +889,7 @@ namespace Project2ImageEditor
 
             canvas1.Children.Clear();
             canvas1.Background = ib;
-            
+
             Canvas newCanvas = new Canvas();
             newCanvas.Background = ib;
 
@@ -916,7 +904,7 @@ namespace Project2ImageEditor
             resizeWindow.Close();
         }
 
-        private void submitSR_Click(Object sender , RoutedEventArgs e)
+        private void submitSR_Click(Object sender, RoutedEventArgs e)
         {
             bool offRes = (bool)srWindow.offlineBtn.IsChecked;
             var item = (ComboBoxItem)srWindow.cmbx.SelectedItem;
@@ -936,6 +924,8 @@ namespace Project2ImageEditor
             System.Drawing.Bitmap bmp = ImageHelpers.BitmapImage2Bitmap(bmpCopied);
             System.Drawing.Bitmap resBitmap = ImageProcessor.PerformSR(scaler, bmp);
             ImageBrush ib = new ImageBrush();
+
+            this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
             ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
             canvas1.Children.Clear();
             canvas1.Background = ib;
@@ -959,7 +949,7 @@ namespace Project2ImageEditor
 
         private void BLur_Click(object sender, RoutedEventArgs e)
         {
-            ImageHelpers.applyFillter("Blur", ImageHelpers.bitmapFromBitmapImage(bitmap),canvas1);
+            ImageHelpers.applyFillter("Blur", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
         }
 
         private void MergeLayersButton_Click(object sender, RoutedEventArgs e)
@@ -968,7 +958,7 @@ namespace Project2ImageEditor
             int resIdx = -1;
             Layer res = new Layer();
             List<int> removedIdx = new List<int>();
-           
+
             foreach (Layer layer in this.layersList)
             {
 
@@ -1003,7 +993,7 @@ namespace Project2ImageEditor
                             res.canvas.Background = ib;
                         }
                     }
-                    else if(!first)
+                    else if (!first)
                     {
                         var uilist = layersList[layer.idx].canvas.Children.Cast<UIElement>().ToList();
                         foreach (UIElement item in uilist)
@@ -1022,7 +1012,7 @@ namespace Project2ImageEditor
 
                 }
             }
-            for(int i = removedIdx.Count-1 ; i >= 0; i--)
+            for (int i = removedIdx.Count - 1; i >= 0; i--)
             {
                 this.layersList.RemoveAt(removedIdx[i]);
             }
@@ -1037,15 +1027,16 @@ namespace Project2ImageEditor
             var mainList = canvas1.Children.Cast<UIElement>().ToList();
 
             List<string> removed = new List<string>();
-            foreach(UIElement item in uilist)
+            foreach (UIElement item in uilist)
             {
-                foreach(UIElement mainItem in mainList)
+                foreach (UIElement mainItem in mainList)
                 {
                     if (item.Uid == mainItem.Uid)
                         removed.Add(item.Uid);
                 }
             }
-            for (int j = removed.Count - 1; j >= 0; j--) {
+            for (int j = removed.Count - 1; j >= 0; j--)
+            {
                 for (int i = 0; i < canvas1.Children.Count; i++)
                 {
                     if (canvas1.Children[i].Uid == removed[j])
@@ -1053,7 +1044,8 @@ namespace Project2ImageEditor
                         canvas1.Children.Remove(canvas1.Children[i]);
                         break;
                     }
-            } }
+                }
+            }
             this.layersList.RemoveAt(currentIdx);
             this.layersListView.ItemsSource = null;
             this.layersListView.ItemsSource = layersList;
@@ -1110,30 +1102,29 @@ namespace Project2ImageEditor
                     enhbtn.Uid = ind + "";
                     images.Add(new myImages(tmp, item.originalImageURL, orgBtn, enhbtn));
                     ind++;
-
                 }
+                profile = new UserProfile();
                 profile.imagesListView.ItemsSource = images;
                 profile.Show();
-
 
             }
             else
             {
-                
+
                 //sign in up
                 loginPage = new Login();
                 signupPage = new Signup();
                 loginPage.loginButton.Click += new RoutedEventHandler(loginButton_Click);
                 loginPage.signupButton.Click += new RoutedEventHandler(moveSignupButton_Click);
                 loginPage.Show();
-                
+
             }
         }
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
             string email = loginPage.emailBox.Text;
             string password = loginPage.passwordBox.Text;
-            user = new User { Email = email, Password = password};
+            user = new User { Email = email, Password = password };
             ObservableCollection<myImages> images = new ObservableCollection<myImages>();
             try
             {
@@ -1165,15 +1156,15 @@ namespace Project2ImageEditor
 
                     orgBtn.Click += new RoutedEventHandler(this.downloadOrginalButton_Click);
                     enhbtn.Click += new RoutedEventHandler(this.downloadEnhancedButton_Click);
-                    orgBtn.Uid = ind+"";
+                    orgBtn.Uid = ind + "";
                     enhbtn.Uid = ind + "";
-                    images.Add(new myImages(tmp, item.originalImageURL,orgBtn,enhbtn));
+                    images.Add(new myImages(tmp, item.originalImageURL, orgBtn, enhbtn));
                     ind++;
-                   
+
                 }
                 profile.imagesListView.ItemsSource = images;
-                profile.Show();                
-                
+                profile.Show();
+
             }
             catch (Exception e1)
             {
@@ -1183,7 +1174,7 @@ namespace Project2ImageEditor
                 Console.WriteLine(e1.Message);
                 user = null;
             }
-            
+
             // send login request
         }
         private void moveSignupButton_Click(object sender, RoutedEventArgs e)
@@ -1215,7 +1206,8 @@ namespace Project2ImageEditor
                     user.Login();
                     this.signedIn = true;
                     this.signupPage.Close();
-                }catch(Exception e1)
+                }
+                catch (Exception e1)
                 {
                     this.signupPage.passwordBox.Clear();
                     this.signupPage.cnfPasswordBox.Clear();
@@ -1224,50 +1216,20 @@ namespace Project2ImageEditor
                     user = null;
                 }
             }
-            
+
         }
         private void downloadOrginalButton_Click(object sender, RoutedEventArgs e)
         {
             String id = (sender as UIElement).Uid;
             FileStream res = Comunicator.DownLoadOriginalImage(user, feedItems[int.Parse(id)]);
-
-            System.Drawing.Bitmap resBmp = new System.Drawing.Bitmap(res);
-            BitmapImage bitmapImage = ImageHelpers.Bitmap2BitmapImage(resBmp);
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
-            if (saveDialog.ShowDialog() == true)
-            {
-                if (saveDialog.FileName == "")
-                    return;
-                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
-                jpg.Frames.Add(BitmapFrame.Create(bitmapImage));
-                using (Stream stm = File.Create(saveDialog.FileName))
-                {
-                    jpg.Save(stm);
-                }
-            }
+            ImageHelpers.SaveStreamAsFile(res);
+   
         }
         private void downloadEnhancedButton_Click(object sender, RoutedEventArgs e)
         {
             String id = (sender as UIElement).Uid;
             FileStream res = Comunicator.DownLoadEnhancedImage(user, feedItems[int.Parse(id)]);
-
-            System.Drawing.Bitmap resBmp = new System.Drawing.Bitmap(res);
-            BitmapImage bitmapImage = ImageHelpers.Bitmap2BitmapImage(resBmp);
-            SaveFileDialog saveDialog = new SaveFileDialog();
-            saveDialog.Filter = "Image files (*.jpg, *.jpeg) | *.jpg; *.jpeg";
-            if (saveDialog.ShowDialog() == true)
-            {
-                if (saveDialog.FileName == "")
-                    return;
-                JpegBitmapEncoder jpg = new JpegBitmapEncoder();
-                jpg.Frames.Add(BitmapFrame.Create(bitmapImage));
-                using (Stream stm = File.Create(saveDialog.FileName))
-                {
-                    jpg.Save(stm);
-                }
-            }
-
+            ImageHelpers.SaveStreamAsFile(res);
         }
 
         private void cutButton_Click(object sender, RoutedEventArgs e)
@@ -1275,6 +1237,6 @@ namespace Project2ImageEditor
 
         }
 
-      
+
     }
 }

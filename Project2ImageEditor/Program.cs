@@ -300,8 +300,8 @@ namespace Project2ImageEditor{
             string path = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
             Directory.CreateDirectory(path);
 
-            string enhanced_path = Path.Combine(path, $"tmp_image_x{scale}.jpg");
-            path = Path.Combine(path, "tmp_image.jpg");
+            string enhanced_path = Path.Combine(path, $"tmp_image_x{scale}.png");
+            path = Path.Combine(path, "tmp_image.png");
 
             bmp.Save(path, ImageFormat.Jpeg);
 

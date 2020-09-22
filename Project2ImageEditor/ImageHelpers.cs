@@ -24,6 +24,49 @@ namespace Project2ImageEditor
 {
     public static class ImageHelpers
     {
+
+        public static void SaveStreamAsFile(Stream inputStream)
+        {
+
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Image files (*.jpg, *.jpeg,*.png) | *.jpg; *.jpeg; *.png";
+            if (saveDialog.ShowDialog() == true)
+            {
+                if (saveDialog.FileName == "")
+                    return;
+                using (FileStream outputFileStream = new FileStream(saveDialog.FileName, FileMode.Create))
+                {
+                    inputStream.CopyTo(outputFileStream);
+                }
+            }
+        }
+
+        public static void saveImage(BitmapSource bmp)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "Image files (*.jpg, *.jpeg,*.png) | *.jpg; *.jpeg; *.png";
+            if (saveDialog.ShowDialog() == true)
+            {
+                if (saveDialog.FileName == "")
+                    return;
+                BitmapEncoder encoder;
+                if (System.IO.Path.GetExtension(saveDialog.FileName) == "png")
+                    encoder = new PngBitmapEncoder();
+
+                else
+                    encoder = new JpegBitmapEncoder();
+
+
+                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                using (var fileStream = new System.IO.FileStream(saveDialog.FileName, System.IO.FileMode.Create))
+                {
+                    encoder.Save(fileStream);
+                }
+
+
+
+            }
+        }
         public static T CloneXaml<T>(T source)
         {
             string xaml = XamlWriter.Save(source);
@@ -70,7 +113,7 @@ namespace Project2ImageEditor
             Bitmap bitmap = new Bitmap(stream);
             return bitmap;
         }
-        public static System.Drawing.Bitmap interpolate(System.Drawing.Bitmap bitmap , string type ,int w, int h)
+        public static System.Drawing.Bitmap interpolate(System.Drawing.Bitmap bitmap, string type, int w, int h)
         {
             Filters filters = new Filters();
             System.Drawing.Bitmap res = null;
@@ -98,9 +141,9 @@ namespace Project2ImageEditor
             }
             return res;
         }
-        public static bool CheckInside(System.Windows.Point begin,Double w ,Double h, System.Windows.Point p)
+        public static bool CheckInside(System.Windows.Point begin, Double w, Double h, System.Windows.Point p)
         {
-            if (p.X < w + begin.X-0.1 && p.Y < h + begin.Y-0.1 && p.X > begin.X+0.1 && p.Y > begin.Y+0.1)
+            if (p.X < w + begin.X - 0.1 && p.Y < h + begin.Y - 0.1 && p.X > begin.X + 0.1 && p.Y > begin.Y + 0.1)
                 return true;
             return false;
         }
@@ -119,9 +162,9 @@ namespace Project2ImageEditor
             bitmap.UnlockBits(bitmapData);
             return bitmapSource;
         }
-       
 
-        public static RenderTargetBitmap snipCanvas(Canvas canvas , System.Windows.Size size)
+
+        public static RenderTargetBitmap snipCanvas(Canvas canvas, System.Windows.Size size)
         {
             //int width = (int)canvas.ActualWidth;
             //int height = (int)canvas.ActualHeight;
@@ -138,7 +181,7 @@ namespace Project2ImageEditor
 
             return bmpCopied;
         }
-        public static Bitmap newSnip(Canvas canvas,System.Windows.Point p,double w,double h)
+        public static Bitmap newSnip(Canvas canvas, System.Windows.Point p, double w, double h)
         {
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)canvas.RenderSize.Width,
     (int)canvas.RenderSize.Height, 96d, 96d, System.Windows.Media.PixelFormats.Default);
@@ -170,7 +213,7 @@ namespace Project2ImageEditor
             return (UIElement)System.Windows.Markup.XamlReader.Load(xmlReader);
 
         }
-        public static void applyFillter(string fillterType , System.Drawing.Bitmap bmp,Canvas canvas)
+        public static void applyFillter(string fillterType, System.Drawing.Bitmap bmp, Canvas canvas)
         {
             System.Drawing.Image newImage = bmp;
             var imageFactory = new ImageFactory(false);
@@ -254,7 +297,7 @@ namespace Project2ImageEditor
 
             //freeze bitmapSource and clear memory to avoid memory leaks
             bitmapSource.Freeze();
-          //  DeleteObject(bmpPt);
+            //  DeleteObject(bmpPt);
 
             return bitmapSource;
         }
@@ -276,23 +319,23 @@ namespace Project2ImageEditor
         }
         public static void CreateSaveBitmap(Canvas canvas, string filename)
         {
-         
-        var height = canvas.ActualHeight;
-            var width = canvas.ActualWidth;
-           /* foreach (UIElement child in canvas.Children)
-            {
-                if(child.GetType() == typeof(Image))
-                {
-                    Image im = (Image)child;
-                    height = im.ActualHeight;
-                    width = im.ActualWidth;
-                }
 
-                // ...
-            }*/
+            var height = canvas.ActualHeight;
+            var width = canvas.ActualWidth;
+            /* foreach (UIElement child in canvas.Children)
+             {
+                 if(child.GetType() == typeof(Image))
+                 {
+                     Image im = (Image)child;
+                     height = im.ActualHeight;
+                     width = im.ActualWidth;
+                 }
+
+                 // ...
+             }*/
 
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
-             (int)width, (int)height, 
+             (int)width, (int)height,
              96d, 96d, PixelFormats.Pbgra32);
             // needed otherwise the image output is black
             canvas.Measure(new System.Windows.Size((int)width, (int)height));

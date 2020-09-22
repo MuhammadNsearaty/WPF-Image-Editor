@@ -233,10 +233,14 @@
             <StackPanel Orientation="Vertical">
                 <ListView x:Name="layersListView"
                  Height="297"
-                 Margin="10,0,10,10"
+                 Margin="10,10,10,10"
                  VerticalAlignment="Bottom"
                  Padding="0,0,0,0">
-
+                    <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                     <ListView.View>
                         <GridView x:Name="my_dataGrid">
                             <GridView.ColumnHeaderContainerStyle>

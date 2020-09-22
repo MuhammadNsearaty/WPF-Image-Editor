@@ -555,11 +555,12 @@ namespace Project2ImageEditor
             ib.ImageSource = bitmap;
             newCanvas.Background = ib;
             canvas1.Background = ib;
+            this.layersList = new List<Layer>();
             this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
             this.layersListView.ItemsSource = null;
             this.layersListView.ItemsSource = layersList;
             this.currentIdx = 0;
-            this.idx++;
+            this.idx =1;
         }
         private void Orgin_Click(object sender, RoutedEventArgs e)
         {

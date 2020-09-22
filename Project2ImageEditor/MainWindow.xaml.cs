@@ -859,26 +859,10 @@ namespace Project2ImageEditor
 
         private void resizeButton_Click(object sender, RoutedEventArgs e)
         {
-            choose = new chooseWindow();
-            ObservableCollection<chooseBtns> btnsList = new ObservableCollection<chooseBtns>();
-
-            Button interpolateBtn = new Button();
-            interpolateBtn.Content = "Interpolate";
-            interpolateBtn.Click += new RoutedEventHandler(interpolate_Click);
-           
-
-            Button SRBtn = new Button();
-            SRBtn.Content = "Super Resolution";
-            SRBtn.Click += new RoutedEventHandler(SR_Click);
-
-
-            btnsList.Add(new chooseBtns(interpolateBtn,SRBtn));
-
-            
-            choose.listView.ItemsSource = btnsList;
-
+            choose = new chooseWindow();          
+            choose.interpolateBtn.Click += new RoutedEventHandler(interpolate_Click);           
+            choose.SRBtn.Click += new RoutedEventHandler(SR_Click);
             choose.Show();
-            
         }
         private void interpolate_Click(object sender,RoutedEventArgs e)
         {
@@ -889,6 +873,7 @@ namespace Project2ImageEditor
         }
         private void SR_Click(object sender, RoutedEventArgs e)
         {
+            choose.Close();
             srWindow = new SRWindow();
 
             srWindow.submitSRButton.Click += new RoutedEventHandler(submitSR_Click);
@@ -927,19 +912,25 @@ namespace Project2ImageEditor
 
         private void submitSR_Click(Object sender , RoutedEventArgs e)
         {
-            srWindow.Close();
-
+            bool offRes = (bool)srWindow.offlineBtn.IsChecked;
             var item = (ComboBoxItem)srWindow.cmbx.SelectedItem;
-           int scaler = int.Parse(item.Content.ToString());
+            int scaler = int.Parse(item.Content.ToString());
+
+            if (offRes)
+            {
+                //offline SR
+            }
+            else
+            {
+                //online SR
+            }
+            srWindow.Close();
 
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             System.Drawing.Bitmap bmp = ImageHelpers.BitmapImage2Bitmap(bmpCopied);
-
-
             System.Drawing.Bitmap resBitmap = ImageProcessor.PerformSR(scaler, bmp);
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
-
             canvas1.Children.Clear();
             canvas1.Background = ib;
 

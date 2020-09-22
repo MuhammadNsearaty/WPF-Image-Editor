@@ -6,18 +6,33 @@
         xmlns:local="clr-namespace:Project2ImageEditor"
         mc:Ignorable="d"
         Title="SRWindow"
-        Height="147.564"
+        Height="200.529"
         Width="357.077">
-    <StackPanel Orientation="Horizontal">
-        <Label Content="Scalling Factor"
-               Margin="10,43,0,42.6" />
-        <ComboBox x:Name="cmbx" Margin="10,45,0,44.6"
-                  Width="98" >
-            <ComboBoxItem Content="2" IsSelected="True"/>
-            <ComboBoxItem Content="3" />
-        </ComboBox>
-        <Button x:Name="submitSRButton" Content="Submit"
-                Margin="60,45,0,44.6"
-                Height="Auto" />
+
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal"
+                    Height="93"
+                    Margin="0,0,0.4,0">
+            <Label Content="Scalling Factor"
+                   Margin="10,43,0,17.8" />
+            <ComboBox x:Name="cmbx"
+                      Margin="10,43,0,9.8"
+                      Width="98"
+                      Height="40">
+                <ComboBoxItem Content="2"
+                              IsSelected="True" />
+                <ComboBoxItem Content="3" />
+            </ComboBox>
+            <Button x:Name="submitSRButton"
+                    Content="Submit"
+                    Margin="60,45,0,17.8"
+                    Height="Auto" />
+        </StackPanel>
+        <StackPanel Margin="30,0,20,0"
+                    Orientation="Horizontal">
+            <RadioButton x:Name="offlineBtn" Content="Offline" GroupName="type" IsChecked="True"/>
+            <RadioButton x:Name="onlineBtn" Content="Online"
+                         GroupName="type" />
+        </StackPanel>
     </StackPanel>
 </Window>

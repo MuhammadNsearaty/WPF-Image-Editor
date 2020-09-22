@@ -5,35 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Project2ImageEditor"
         mc:Ignorable="d"
-        Height="162.781"
+        Height="136.233"
         Title="Choose"
-        Width="286.079">
-    <ListView x:Name="listView">
-        <ListView.View>
-            <GridView x:Name="imagesGrid">
-                <GridView.ColumnHeaderContainerStyle>
-                    <Style TargetType="{x:Type GridViewColumnHeader}">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
-                    </Style>
-                </GridView.ColumnHeaderContainerStyle>
-                <GridViewColumn x:Name="ImagesColumn"
-                                Width="auto">
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate >
-                            <StackPanel Orientation="Vertical" >
-                                <Button>
-                                    <ContentPresenter Content="{Binding Path=btn1}"/>
-                                </Button>
-                                <Button>
-                                    <ContentPresenter Content="{Binding Path=btn2}" />
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-            </GridView>
-            </ListView.View>
-    </ListView>
-    
+        Width="331.489">
+    <StackPanel Orientation="Horizontal">
+        <Button x:Name="interpolateBtn"  Content="Interpolate"
+                Margin="20" />
+        <Button x:Name="SRBtn" Content="Super Resolution" Margin="20"/>
+
+    </StackPanel>
 </Window>

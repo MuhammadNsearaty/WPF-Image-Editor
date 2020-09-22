@@ -35,6 +35,7 @@ namespace Project2ImageEditor{
         public static IRestResponse SendFeedItem(User user, int scale, string path)
         {
             var request = new RestRequest("/api/feed/", DataFormat.Json);
+            request.AddHeader("Authorization", user.AuthToken.GetHeaderValue());
             request.AddParameter("scaling_factor", scale);
             request.AddFile("upload_image", path);
             var response = ImageEditor.client.Post(request);
@@ -60,9 +61,7 @@ namespace Project2ImageEditor{
                 request = new RestRequest("#");
                 request.AddHeader("Authorization", user.AuthToken.GetHeaderValue());
                 var fileBytes = restClient.DownloadData(request);
-                Directory.CreateDirectory(@"..\..\temp");
-                var filePath = Path.Combine(@"..\..\temp\", new Uri(feedItem.originalImageURL).Segments.Last());
-                Console.WriteLine("SR filepath" + filePath);
+                var filePath = Path.GetTempFileName();
                 File.WriteAllBytes(filePath, fileBytes);
                 return new FileStream(filePath, FileMode.Open, FileAccess.Read);
             }
@@ -85,9 +84,7 @@ namespace Project2ImageEditor{
                     request = new RestRequest("#");
                     request.AddHeader("Authorization", user.AuthToken.GetHeaderValue());
                     var fileBytes = restClient.DownloadData(request);
-                    Directory.CreateDirectory(@"..\..\temp");
-                    var filePath = Path.Combine(@"..\..\temp\", "SR" + new Uri(json["url"].ToString()).Segments.Last());
-                    Console.WriteLine("SR filepath" + filePath);
+                    var filePath = Path.GetTempFileName();
                     File.WriteAllBytes(filePath, fileBytes);
                     return new FileStream(filePath, FileMode.Open, FileAccess.Read);
                 }
@@ -295,7 +292,7 @@ namespace Project2ImageEditor{
             }
         }
 
-        public static System.Drawing.Bitmap PerformSR(int scale, System.Drawing.Bitmap bmp)
+        public static System.Drawing.Bitmap PerformSR(int scale, System.Drawing.Bitmap bmp ,bool baseline)
         {
             string path = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
             Directory.CreateDirectory(path);

@@ -9,13 +9,20 @@
         Title="UserProfile" Height="450" Width="650">
     <Grid>
         <StackPanel>
-            <Label  Height="53"
-                    Margin="20,20,430.2,0">
-                <TextBlock Text="User Profile" FontSize="30" Height="43"
+            <StackPanel Orientation="Horizontal">
+                <Label  Height="53"
+                    Margin="10,10,300.2,0">
+                    <TextBlock x:Name="label" Text="User Profile" FontSize="30" Height="43"
                            Width="183" />
-            </Label>
-            <ListView x:Name="imagesListView" Height="340" Margin="120,0,120,0">
-                
+                </Label>
+                <Button x:Name="logoutBtn"  Content="Log out"/>
+            </StackPanel>
+            <ListView x:Name="imagesListView" Height="340" Margin="120,0,120,0" >
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView x:Name="imagesGrid">
                         <GridViewColumn x:Name="ImagesColumn" Header="MyImages"
@@ -32,11 +39,11 @@
                         <GridViewColumn x:Name="buttonsColumn">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Vertical">
-                                        <Button>
+                                    <StackPanel Orientation="Vertical" >
+                                        <Button Height="60" Background="Transparent" BorderBrush="Transparent">
                                             <ContentPresenter Content="{Binding Path=orgBtn}" />
                                         </Button>
-                                        <Button>
+                                        <Button  Height="60"  Background="Transparent" BorderBrush="Transparent">
                                             <ContentPresenter Content="{Binding Path=enhBtn}" />
                                         </Button>
                                     </StackPanel>

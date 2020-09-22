@@ -28,11 +28,12 @@
                     Margin="60,45,0,17.8"
                     Height="Auto" />
         </StackPanel>
-        <StackPanel Margin="30,0,20,0"
+        <StackPanel Margin="30,0,197.4,0"
                     Orientation="Horizontal">
             <RadioButton x:Name="offlineBtn" Content="Offline" GroupName="type" IsChecked="True"/>
             <RadioButton x:Name="onlineBtn" Content="Online"
                          GroupName="type" />
         </StackPanel>
+        <CheckBox x:Name="chkBtn" Content="Baseline" Margin="30,0,0,0"/>
     </StackPanel>
 </Window>

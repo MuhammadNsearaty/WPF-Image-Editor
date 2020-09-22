@@ -545,7 +545,7 @@ namespace Project2ImageEditor
             if (dlg.ShowDialog() == true)
             {
                 path = dlg.FileName;
-                // BitmapImage bitmap = new BitmapImage();
+                bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(path);
                 bitmap.EndInit();
@@ -909,37 +909,50 @@ namespace Project2ImageEditor
             bool offRes = (bool)srWindow.offlineBtn.IsChecked;
             var item = (ComboBoxItem)srWindow.cmbx.SelectedItem;
             int scaler = int.Parse(item.Content.ToString());
+            bool baseline = (bool)srWindow.chkBtn.IsChecked;
 
-            if (offRes)
-            {
-                //offline SR
-            }
-            else
-            {
-                //online SR
-            }
+            if (scaler == 3)
+                baseline = false;
+
+           
             srWindow.Close();
 
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             System.Drawing.Bitmap bmp = ImageHelpers.BitmapImage2Bitmap(bmpCopied);
-            System.Drawing.Bitmap resBitmap = ImageProcessor.PerformSR(scaler, bmp);
-            ImageBrush ib = new ImageBrush();
+            System.Drawing.Bitmap resBitmap = null;
 
-            this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
-            ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
-            canvas1.Children.Clear();
-            canvas1.Background = ib;
+            if (offRes)
+            {
+                //offline SR
+                resBitmap = ImageProcessor.PerformSR(scaler, bmp, baseline);
 
-            Canvas newCanvas = new Canvas();
-            newCanvas.Background = ib;
+                ImageBrush ib = new ImageBrush();
+                this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+                ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
+                canvas1.Children.Clear();
+                canvas1.Background = ib;
 
-            this.layersList = new List<Layer>();
-            this.layersListView.ItemsSource = null;
+                Canvas newCanvas = new Canvas();
+                newCanvas.Background = ib;
 
-            this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
-            this.layersListView.ItemsSource = layersList;
-            this.currentIdx = 0;
-            this.idx++;
+                this.layersList = new List<Layer>();
+                this.layersListView.ItemsSource = null;
+
+                this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
+                this.layersListView.ItemsSource = layersList;
+                this.currentIdx = 0;
+                this.idx++;
+            }
+            else
+            {
+                //online SR
+                var filePath = System.IO.Path.GetTempFileName();
+                var changed = System.IO.Path.ChangeExtension(filePath, ".jpg");
+                File.Move(filePath, changed);
+                ImageHelpers.saveImage(bmpCopied, changed);
+                Comunicator.SendFeedItem(user, scaler, changed);
+                MessageBox.Show("check your profile");
+            }
 
         }
         private void exitButton_Click(object sender, RoutedEventArgs e)
@@ -1096,6 +1109,10 @@ namespace Project2ImageEditor
                     orgBtn.FontSize = 14;
                     enhbtn.FontSize = 14;
 
+                    orgBtn.BorderThickness = new Thickness(0);
+                    enhbtn.BorderThickness = new Thickness(0);
+
+
                     orgBtn.Click += new RoutedEventHandler(this.downloadOrginalButton_Click);
                     enhbtn.Click += new RoutedEventHandler(this.downloadEnhancedButton_Click);
                     orgBtn.Uid = ind + "";
@@ -1104,6 +1121,8 @@ namespace Project2ImageEditor
                     ind++;
                 }
                 profile = new UserProfile();
+                profile.logoutBtn.Click += new RoutedEventHandler(logoutBtn_Click);
+                profile.label.Text = user.Name;
                 profile.imagesListView.ItemsSource = images;
                 profile.Show();
 
@@ -1137,6 +1156,7 @@ namespace Project2ImageEditor
                 }
                 catch (Exception e1)
                 { //ok continue
+                    Console.WriteLine("failled to get feed items");
                 }
                 int ind = 0;
                 foreach (FeedItem item in feedItems)
@@ -1162,6 +1182,9 @@ namespace Project2ImageEditor
                     ind++;
 
                 }
+                profile = new UserProfile();
+                profile.logoutBtn.Click += new RoutedEventHandler(logoutBtn_Click);
+                profile.label.Text = user.Name;
                 profile.imagesListView.ItemsSource = images;
                 profile.Show();
 
@@ -1176,6 +1199,11 @@ namespace Project2ImageEditor
             }
 
             // send login request
+        }
+        private void logoutBtn_Click(object sender ,RoutedEventArgs e)
+        {
+            profile.Close();
+            this.signedIn = false;
         }
         private void moveSignupButton_Click(object sender, RoutedEventArgs e)
         {

@@ -67,6 +67,18 @@ namespace Project2ImageEditor
 
             }
         }
+        public static void saveImage(BitmapSource bmp, string path)
+        {
+            BitmapEncoder encoder = new JpegBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(bmp));
+            using (var fileStream = new System.IO.FileStream(path, System.IO.FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
+        }
+        
+
         public static T CloneXaml<T>(T source)
         {
             string xaml = XamlWriter.Save(source);

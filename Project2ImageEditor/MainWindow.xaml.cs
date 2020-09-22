@@ -573,6 +573,11 @@ namespace Project2ImageEditor
             this.currentIdx = 0;
             this.idx++;
         }
+        private void Orgin_Click(object sender, RoutedEventArgs e)
+        {
+            ImageHelpers.applyFillter("Orgin", ImageHelpers.bitmapFromBitmapImage(bitmap), canvas1);
+
+        }
         private void Comic_Click(object sender, RoutedEventArgs e)
 
         {
@@ -890,6 +895,7 @@ namespace Project2ImageEditor
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h) ;
 
+            this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = ImageHelpers.Bitmap2BitmapImage(resBitmap);
 
@@ -1268,5 +1274,7 @@ namespace Project2ImageEditor
         {
 
         }
+
+      
     }
 }

@@ -33,6 +33,7 @@
                     <MenuItem x:Name="exitButton" Header="Exit" Height="30" Click="exitButton_Click"/>
                 </MenuItem>
                 <MenuItem x:Name="filterItem" Header="Filter">
+                    <MenuItem x:Name="Orgin" Header="Orginal" Click="Orgin_Click"/>
                     <MenuItem x:Name="BLur" Header="Blur" Click="BLur_Click"/>
                     <MenuItem Header="Comic" Click="Comic_Click"/>
                     <MenuItem Header="BlackWhite" Click="BlackWhiteButton_Click"/>

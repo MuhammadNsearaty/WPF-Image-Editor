@@ -177,6 +177,7 @@ namespace Project2ImageEditor
 
             switch (fillterType)
             {
+
                 case "Blur":
                     imageFactory.Load(newImage).GaussianBlur(10);
                     break;
@@ -224,13 +225,19 @@ namespace Project2ImageEditor
 
             }
 
+            System.Drawing.Image tmp;
+            if (fillterType == "Orgin")
+            {
+                tmp = bmp;
+            }
+            else
+            {
+                tmp = imageFactory.Image;
+            }
 
-            System.Drawing.Image tmp = imageFactory.Image;
-
-            BitmapSource source = ImageHelpers.GetImageStream(tmp);
-            BitmapImage source1 = ImageHelpers.Bitmap2BitmapImage(new System.Drawing.Bitmap(tmp));
+            BitmapImage source = ImageHelpers.Bitmap2BitmapImage(new System.Drawing.Bitmap(tmp));
             ImageBrush ib = new ImageBrush();
-            ib.ImageSource = source1;
+            ib.ImageSource = source;
             canvas.Background = ib;
 
         }

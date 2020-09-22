@@ -266,7 +266,7 @@ namespace Project2ImageEditor{
         {
             var psi = new ProcessStartInfo
             {
-                FileName = @"..\..\venv\Scripts\python.exe",
+                FileName = @"..\..\EDSR\venv\Scripts\python.exe",
                 RedirectStandardInput = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -274,10 +274,15 @@ namespace Project2ImageEditor{
                 RedirectStandardError = true,
             };
             var script = @"..\..\EDSR\main.py";
-            psi.Arguments = $"{script} --scale {scale} --input {input} --output {output}";
-
+            psi.Arguments = $"{script} --scale {scale} --input {input} --output {output} --baseline";
+            //psi.Arguments = "--version";
             var process = Process.Start(psi);
-
+            Console.WriteLine("ababa in running");
+            while (!process.StandardError.EndOfStream)
+            {
+                var error = process.StandardError.ReadLine();
+                Console.Error.WriteLine(error);
+            }
             while (!process.StandardOutput.EndOfStream)
             {
                 var line = process.StandardOutput.ReadLine();
@@ -295,10 +300,10 @@ namespace Project2ImageEditor{
             string path = Path.Combine(Directory.GetCurrentDirectory(), "tmp");
             Directory.CreateDirectory(path);
 
-            string enhanced_path = Path.Combine(path, $"tmp_image_x{scale}.png");
-            path = Path.Combine(path, "tmp_image.png");
+            string enhanced_path = Path.Combine(path, $"tmp_image_x{scale}.jpg");
+            path = Path.Combine(path, "tmp_image.jpg");
 
-            bmp.Save(path, ImageFormat.Png);
+            bmp.Save(path, ImageFormat.Jpeg);
 
             PerformSR(scale, path, enhanced_path);
 

@@ -549,7 +549,7 @@ namespace Project2ImageEditor
         private void loadButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
-            dlg.InitialDirectory = "c:\\";
+            
             dlg.Filter = "Images (*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF;*.JPEG|" +
         "All files (*.*)|*.*";
             dlg.RestoreDirectory = true;

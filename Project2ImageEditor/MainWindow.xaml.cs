@@ -478,6 +478,8 @@ namespace Project2ImageEditor
 
         private void newSave(object sender, RoutedEventArgs e)
         {
+            if(bitmap.UriSource == null)
+            { return; }
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             ImageHelpers.saveImage(bmpCopied);
 
@@ -554,6 +556,7 @@ namespace Project2ImageEditor
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = bitmap;
             newCanvas.Background = ib;
+            canvas1.Children.Clear();
             canvas1.Background = ib;
             this.layersList = new List<Layer>();
             this.layersList.Add(new Layer(newCanvas, "Layer 0", true, 0));
@@ -754,8 +757,6 @@ namespace Project2ImageEditor
             }
         }
 
-
-
         private void listView_Click(object sender, MouseButtonEventArgs e)
         {
             String id = (sender as UIElement).Uid;
@@ -766,8 +767,6 @@ namespace Project2ImageEditor
         {
 
         }
-
-
 
         private void selectionButton_Click(object sender, RoutedEventArgs e)
         {
@@ -807,8 +806,6 @@ namespace Project2ImageEditor
 
             }
         }
-
-
 
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -869,7 +866,10 @@ namespace Project2ImageEditor
         {
             choose.Close();
             srWindow = new SRWindow();
-
+            if (!signedIn)
+            {
+                srWindow.onlineBtn.IsEnabled = false;
+            }
             srWindow.submitSRButton.Click += new RoutedEventHandler(submitSR_Click);
 
             srWindow.Show();
@@ -883,6 +883,7 @@ namespace Project2ImageEditor
 
             RenderTargetBitmap bmpCopied = ImageHelpers.snipCanvas(canvas1, new System.Windows.Size((int)bitmap.Width, (int)bitmap.Height));
             System.Drawing.Bitmap resBitmap = ImageHelpers.interpolate(ImageHelpers.BitmapImage2Bitmap(bmpCopied), resizeWindow.type, resizeWindow.w, resizeWindow.h);
+
 
             this.bitmap = ImageHelpers.Bitmap2BitmapImage(resBitmap);
             ImageBrush ib = new ImageBrush();
@@ -1037,6 +1038,11 @@ namespace Project2ImageEditor
 
         private void DeleteLayerButton_Click(object sender, RoutedEventArgs e)
         {
+            if(currentIdx == 0)
+            {
+                MessageBox.Show("Technically you can't delete the main layer");
+                return;
+            }
             var uilist = layersList[this.currentIdx].canvas.Children.Cast<UIElement>().ToList();
             var mainList = canvas1.Children.Cast<UIElement>().ToList();
 
@@ -1061,6 +1067,7 @@ namespace Project2ImageEditor
                 }
             }
             this.layersList.RemoveAt(currentIdx);
+            this.currentIdx = 0;
             this.layersListView.ItemsSource = null;
             this.layersListView.ItemsSource = layersList;
         }

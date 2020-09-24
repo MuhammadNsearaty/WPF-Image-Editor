@@ -487,6 +487,7 @@ namespace Project2ImageEditor
         private void cropButton_Click(object sender, RoutedEventArgs e)
         {
             cropButton.IsEnabled = false;
+            this.selectButton.IsEnabled = true;
             RectButton.IsEnabled = true;
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
@@ -514,12 +515,13 @@ namespace Project2ImageEditor
             circleButton.IsEnabled = true;
             RectButton.IsEnabled = true;
             this.flag = "pen";
+            this.selectButton.IsEnabled = true;
         }
 
         private void RectButton_Click(object sender, RoutedEventArgs e)
         {
             RectButton.IsEnabled = false;
-
+            this.selectButton.IsEnabled = true;
             cropButton.IsEnabled = true;
             penButton.IsEnabled = true;
             circleButton.IsEnabled = true;
@@ -529,7 +531,7 @@ namespace Project2ImageEditor
         private void circleButton_Click(object sender, RoutedEventArgs e)
         {
             circleButton.IsEnabled = false;
-
+            this.selectButton.IsEnabled = true;
             cropButton.IsEnabled = true;
             penButton.IsEnabled = true;
             RectButton.IsEnabled = true;
@@ -803,8 +805,12 @@ namespace Project2ImageEditor
                 }
 
 
-
             }
+            penButton.IsEnabled = true;
+            cropButton.IsEnabled = true;
+            circleButton.IsEnabled = true;
+            RectButton.IsEnabled = true;
+            this.selectButton.IsEnabled = false;
         }
 
         private void canvas1_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -1226,6 +1232,7 @@ namespace Project2ImageEditor
             string name = signupPage.nameBox.Text;
             string password = signupPage.passwordBox.Text;
             string cnfPassword = signupPage.cnfPasswordBox.Text;
+            ObservableCollection<myImages> images = new ObservableCollection<myImages>();
 
             if (!password.Equals(cnfPassword))
             {
@@ -1239,9 +1246,47 @@ namespace Project2ImageEditor
                     // send signUp request to server
                     user = new User { Email = email, Name = name, Password = password };
                     user.Signup();
-                    user.Login();
                     this.signedIn = true;
                     this.signupPage.Close();
+
+                    try
+                    {
+                        feedItems = Comunicator.GetFeedItems(user).Data;
+                    }
+                    catch (Exception e1)
+                    { //ok continue
+                        Console.WriteLine("failled to get feed items");
+                    }
+                    int ind = 0;
+                    foreach (FeedItem item in feedItems)
+                    {
+                        //show the feedItems on the listvIew profile
+                        var stream = Comunicator.DownLoadOriginalImage(user, item);
+                        byte[] buffer = new byte[stream.Length];
+                        stream.Read(buffer, 0, Convert.ToInt32(stream.Length));
+                        System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(stream);
+                        BitmapImage tmp = ImageHelpers.Bitmap2BitmapImage(bmp);
+                        Button orgBtn = new Button();
+                        Button enhbtn = new Button();
+                        orgBtn.Content = "Dowload Orginal";
+                        enhbtn.Content = "Download Enhanced";
+                        orgBtn.FontSize = 14;
+                        enhbtn.FontSize = 14;
+
+                        orgBtn.Click += new RoutedEventHandler(this.downloadOrginalButton_Click);
+                        enhbtn.Click += new RoutedEventHandler(this.downloadEnhancedButton_Click);
+                        orgBtn.Uid = ind + "";
+                        enhbtn.Uid = ind + "";
+                        images.Add(new myImages(tmp, item.originalImageURL, orgBtn, enhbtn));
+                        ind++;
+
+                    }
+                    profile = new UserProfile();
+                    profile.logoutBtn.Click += new RoutedEventHandler(logoutBtn_Click);
+                    profile.label.Text = user.Name;
+                    profile.imagesListView.ItemsSource = images;
+                    profile.Show();
+
                 }
                 catch (Exception e1)
                 {
